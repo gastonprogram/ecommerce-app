@@ -53,10 +53,13 @@ La aplicación estará disponible en `http://localhost:3000`.
 - Pasarela de pagos simulada
 - Panel de administración
 
-## 🤝 Autor
+## 🤝 Autores
 
+- **Pedro [PeppoScotti](https://github.com/PeppoScotti)**
 - **Gaston [gastonprogram](https://github.com/gastonprogram)**
+- **Santino [--](https://github.com/gastonprogram)**
+- **Maximo [gastonprogram](https://github.com/gastonprogram)**
+- **Juan [gastonprogram](https://github.com/gastonprogram)**
+- **Valentina [gastonprogram](https://github.com/gastonprogram)**
+- **Luciano [gastonprogram](https://github.com/gastonprogram)**
 
----
-
-¿Te gustaría agregar algo más, como capturas de pantalla, instrucciones para contribuir o una sección de licencias? Si quieres, puedo adaptar el contenido o el formato según tus preferencias. ¿Listo para que lo suba al repositorio?
