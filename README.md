@@ -1,7 +1,3 @@
-¡Perfecto! Aquí tienes un README.md profesional y estético para tu proyecto de e-commerce con React, orientado a la materia Aplicaciones Interactivas en UADE. Puedes personalizarlo aún más si lo deseas:
-
----
-
 # 🛒 E-commerce App
 
 Proyecto de e-commerce realizado en **React**, desarrollado como parte de la materia **Aplicaciones Interactivas** de la carrera en **UADE**.
