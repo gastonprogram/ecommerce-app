@@ -1,6 +1,6 @@
 # 🛒 E-commerce App
 
-Proyecto de e-commerce realizado en **React**, desarrollado como parte de la materia **Aplicaciones Interactivas** de la carrera en **UADE**.
+Proyecto de e-commerce realizado en **React**, desarrollado como parte de la materia **Aplicaciones Interactivas** de la carrera Desarrollo de Software en **UADE**.
 
 ## 📚 Descripción
 
