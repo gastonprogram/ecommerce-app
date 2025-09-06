@@ -1,0 +1,229 @@
+/**
+ * Estilos para los componentes de autenticación (Login y Registro)
+ * 
+ * Este archivo contiene todos los estilos compartidos para los formularios
+ * de inicio de sesión y registro, incluyendo:
+ * - Layout y posicionamiento
+ * - Estilos de formularios y campos
+ * - Estados de error y éxito
+ * - Responsive design
+ */
+
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
+
+/* Contenedor que centra la tarjeta de autenticación en toda la pantalla */
+.auth-container {
+  display: flex;
+  justify-content: center;  /* Centrado horizontal */
+  align-items: center;      /* Centrado vertical */
+  min-height: 100vh;        /* Ocupa toda la altura de la pantalla */
+  background-color: #f5f7fa; /* Fondo gris claro */
+  padding: 20px;            /* Espaciado interno para dispositivos móviles */
+  box-sizing: border-box;   /* Incluir padding en el cálculo del tamaño */
+  width: 100%;
+  margin: 0;
+}
+
+/* ========================================
+   TARJETA DE AUTENTICACIÓN
+   ======================================== */
+
+/* Contenedor principal del formulario con estilo de tarjeta */
+.auth-card {
+  background: white;               /* Fondo blanco para destacar */
+  padding: 40px;                  /* Espaciado interno generoso */
+  border-radius: 12px;            /* Bordes redondeados modernos */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Sombra sutil */
+  width: 100%;                    /* Ancho completo del contenedor padre */
+  max-width: 400px;               /* Ancho máximo para mantener proporciones */
+  margin: 0 auto;                 /* Centrado horizontal */
+  box-sizing: border-box;         /* Incluir padding en el cálculo */
+  position: relative;             /* Para posicionamiento de elementos internos */
+}
+
+/* Título principal del formulario */
+.auth-title {
+  text-align: center;    /* Centrado del texto */
+  margin-bottom: 30px;   /* Espaciado inferior */
+  color: #2d3748;        /* Color gris oscuro */
+  font-size: 28px;       /* Tamaño de fuente grande */
+  font-weight: 600;      /* Peso de fuente semi-negrita */
+}
+
+/* ========================================
+   FORMULARIO
+   ======================================== */
+
+/* Contenedor del formulario con layout vertical */
+.auth-form {
+  display: flex;
+  flex-direction: column; /* Elementos apilados verticalmente */
+  gap: 20px;             /* Espaciado uniforme entre elementos */
+}
+
+/* Grupo de campos (label + input + error) */
+.form-group {
+  display: flex;
+  flex-direction: column; /* Label arriba, input abajo */
+  gap: 8px;              /* Espaciado pequeño entre label e input */
+}
+
+/* Etiquetas de los campos */
+.form-label {
+  font-weight: 500;   /* Peso medio para destacar */
+  color: #374151;     /* Color gris medio */
+  font-size: 14px;    /* Tamaño de fuente pequeño pero legible */
+}
+
+/* ========================================
+   CAMPOS DE ENTRADA
+   ======================================== */
+
+/* Estilo base para todos los inputs */
+.form-input {
+  padding: 12px 16px;              /* Espaciado interno cómodo */
+  border: 2px solid #e2e8f0;       /* Borde gris claro */
+  border-radius: 8px;              /* Bordes redondeados */
+  font-size: 16px;                 /* Tamaño de fuente estándar */
+  transition: border-color 0.2s ease; /* Animación suave del borde */
+  background-color: #ffffff;        /* Fondo blanco */
+  color: #1a202c;                  /* Color del texto oscuro */
+}
+
+/* Estado de error en los inputs */
+.form-input.error {
+  border-color: #e53e3e;                    /* Borde rojo para errores */
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1); /* Sombra roja sutil */
+}
+
+/* Estilo del placeholder (texto de ayuda) */
+.form-input::placeholder {
+  color: #a0aec0; /* Color gris claro para el placeholder */
+}
+
+/* Estado de focus (cuando el usuario hace clic en el input) */
+.form-input:focus {
+  outline: none;                           /* Quitar outline por defecto */
+  border-color: #4299e1;                   /* Borde azul de enfoque */
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1); /* Sombra azul sutil */
+}
+
+/* Estado de focus cuando hay error */
+.form-input.error:focus {
+  border-color: #e53e3e;                    /* Mantener borde rojo */
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1); /* Mantener sombra roja */
+}
+
+/* ========================================
+   MENSAJES DE ERROR
+   ======================================== */
+
+/* Mensajes de error que aparecen debajo de los inputs */
+.error-message {
+  color: #e53e3e;    /* Color rojo para errores */
+  font-size: 12px;   /* Tamaño de fuente pequeño */
+  margin-top: 4px;   /* Espaciado superior mínimo */
+  display: block;    /* Mostrar como bloque para ocupar toda la línea */
+}
+
+/* ========================================
+   MENSAJES DE ESTADO
+   ======================================== */
+
+/* Contenedor base para mensajes de éxito o error */
+.mensaje {
+  margin-top: 16px;     /* Espaciado superior */
+  padding: 12px;        /* Espaciado interno */
+  border-radius: 6px;   /* Bordes redondeados */
+  font-size: 14px;      /* Tamaño de fuente estándar */
+  text-align: center;   /* Texto centrado */
+  font-weight: 500;     /* Peso medio para destacar */
+}
+
+/* Estilo para mensajes de éxito */
+.mensaje.success {
+  background-color: #f0fff4; /* Fondo verde muy claro */
+  color: #2f855a;            /* Texto verde oscuro */
+  border: 1px solid #9ae6b4; /* Borde verde claro */
+}
+
+/* Estilo para mensajes de error */
+.mensaje.error {
+  background-color: #fed7d7; /* Fondo rojo muy claro */
+  color: #c53030;            /* Texto rojo oscuro */
+  border: 1px solid #fc8181; /* Borde rojo claro */
+}
+
+/* ========================================
+   BOTONES
+   ======================================== */
+
+/* Botón principal de autenticación */
+.auth-button {
+  padding: 14px;                        /* Espaciado interno generoso */
+  background-color: #4299e1;            /* Fondo azul */
+  color: white;                         /* Texto blanco */
+  border: none;                         /* Sin borde */
+  border-radius: 8px;                   /* Bordes redondeados */
+  font-size: 16px;                      /* Tamaño de fuente estándar */
+  font-weight: 600;                     /* Peso semi-negrita */
+  cursor: pointer;                      /* Cursor de mano */
+  transition: background-color 0.2s ease; /* Animación suave del color */
+  margin-top: 10px;                     /* Espaciado superior */
+}
+
+/* Estado hover del botón */
+.auth-button:hover {
+  background-color: #3182ce; /* Azul más oscuro al pasar el mouse */
+}
+
+/* Estado activo del botón (cuando se hace clic) */
+.auth-button:active {
+  transform: translateY(1px); /* Efecto de presión hacia abajo */
+}
+
+/* ========================================
+   PIE DEL FORMULARIO
+   ======================================== */
+
+/* Contenedor del pie con enlaces adicionales */
+.auth-footer {
+  text-align: center; /* Centrado del texto */
+  margin-top: 24px;   /* Espaciado superior */
+  color: #718096;     /* Color gris medio */
+}
+
+/* Enlaces dentro del pie del formulario */
+.auth-link {
+  color: #4299e1;               /* Color azul */
+  cursor: pointer;              /* Cursor de mano */
+  font-weight: 500;             /* Peso medio */
+  transition: color 0.2s ease;  /* Animación suave del color */
+  text-decoration: none;        /* Sin subrayado por defecto */
+}
+
+/* Estado hover de los enlaces */
+.auth-link:hover {
+  color: #3182ce;              /* Azul más oscuro */
+  text-decoration: underline;   /* Subrayado al pasar el mouse */
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Adaptación para dispositivos móviles */
+@media (max-width: 480px) {
+  /* Reducir padding en pantallas pequeñas */
+  .auth-card {
+    padding: 30px 20px; /* Menos espaciado interno */
+    margin: 10px;       /* Margen mínimo */
+  }
+  
+  /* Reducir tamaño del título en móviles */
+  .auth-title {
+    font-size: 24px; /* Tamaño más pequeño para móviles */
+  }
+}

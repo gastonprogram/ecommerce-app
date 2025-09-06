@@ -1,0 +1,70 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nombre": "Juan Pérez",
+      "email": "juan@email.com",
+      "password": "Juan123!",
+      "fechaRegistro": "2024-01-15T10:30:00.000Z",
+      "activo": true
+    },
+    {
+      "id": "2",
+      "nombre": "María García",
+      "email": "maria@email.com",
+      "password": "Maria456@",
+      "fechaRegistro": "2024-02-20T14:15:00.000Z",
+      "activo": true
+    },
+    {
+      "id": "3",
+      "nombre": "Carlos Rodriguez",
+      "email": "carlos@gmail.com",
+      "password": "Carlos789#",
+      "fechaRegistro": "2024-03-10T09:45:00.000Z",
+      "activo": true
+    },
+    {
+      "id": "4",
+      "nombre": "Ana López",
+      "email": "ana@hotmail.com",
+      "password": "Ana2024$",
+      "fechaRegistro": "2024-04-05T16:20:00.000Z",
+      "activo": false
+    },
+    {
+      "id": "5",
+      "nombre": "Pedro Martínez",
+      "email": "pedro@email.com",
+      "password": "Pedro555!",
+      "fechaRegistro": "2024-05-12T11:00:00.000Z",
+      "activo": true
+    }
+  ],
+  "sesiones": [
+    {
+      "id": "1",
+      "usuarioId": 1,
+      "token": "abc123token",
+      "fechaInicio": "2024-12-01T10:30:00.000Z",
+      "fechaExpiracion": "2024-12-02T10:30:00.000Z",
+      "activa": true
+    },
+    {
+      "id": "7d85",
+      "usuarioId": "1",
+      "token": "token_1757083790600_f5k3xlcu5",
+      "fechaInicio": "2025-09-05T14:49:50.600Z",
+      "fechaExpiracion": "2025-09-06T14:49:50.601Z",
+      "activa": true
+    },
+    {
+      "id": "925b",
+      "usuarioId": "1",
+      "token": "token_1757168016094_2inhs3p4b",
+      "fechaInicio": "2025-09-06T14:13:36.094Z",
+      "fechaExpiracion": "2025-09-07T14:13:36.095Z",
+      "activa": true
+    }
+  ]
+}
