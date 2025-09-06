@@ -1,12 +1,65 @@
-# React + Vite
+# 🛒 E-commerce App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Proyecto de e-commerce realizado en **React**, desarrollado como parte de la materia **Aplicaciones Interactivas** de la carrera Desarrollo de Software en **UADE**.
 
-Currently, two official plugins are available:
+## 📚 Descripción
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Esta aplicación simula una tienda online moderna y funcional, permitiendo a los usuarios navegar productos, agregarlos al carrito y realizar compras de manera intuitiva y eficiente. El objetivo principal es aplicar los conocimientos adquiridos en la materia, enfocándose en la experiencia de usuario, la interacción y el diseño de interfaces dinámicas.
 
-## Expanding the ESLint configuration
+## 🚀 Tecnologías utilizadas
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend:** [React](https://reactjs.org/)
+- **Estilos:** CSS Modules / Styled Components (a definir)
+- **Gestión de estado:** Context API / Redux (a definir)
+- **Routing:** React Router DOM
+
+## 🎯 Características principales
+
+- Catálogo de productos dinámico
+- Carrito de compras interactivo
+- Detalle de productos
+- Búsqueda y filtrado de productos
+- Proceso de checkout simulado
+- Interfaz amigable y responsive
+
+## 🏫 Contexto académico
+
+Este proyecto fue creado como trabajo práctico para la materia **Aplicaciones Interactivas** en la **Universidad Argentina de la Empresa (UADE)**, poniendo en práctica conceptos de desarrollo frontend, usabilidad y diseño de experiencias digitales.
+
+## 📦 Instalación y ejecución
+
+1. **Clonar el repositorio:**
+    ```bash
+    git clone https://github.com/gastonprogram/ecommerce-app.git
+    cd ecommerce-app
+    ```
+
+2. **Instalar dependencias:**
+    ```bash
+    npm install
+    ```
+
+3. **Ejecutar la aplicación:**
+    ```bash
+    npm start
+    ```
+
+La aplicación estará disponible en `http://localhost:3000`.
+
+## 💡 Próximas mejoras
+
+- Integración con backend y base de datos
+- Autenticación y registro de usuarios
+- Pasarela de pagos simulada
+- Panel de administración
+
+## 🤝 Autores
+
+- **Pedro [PeppoScotti](https://github.com/PeppoScotti)**
+- **Gaston [gastonprogram](https://github.com/gastonprogram)**
+- **Santino [--](https://github.com/gastonprogram)**
+- **Maximo [--](https://github.com/gastonprogram)**
+- **Juan [--](https://github.com/gastonprogram)**
+- **Valentina [--](https://github.com/gastonprogram)**
+- **Luciano [lverdini](https://github.com/lverdini)**
+
