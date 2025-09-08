@@ -9,7 +9,7 @@
  */
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { validarFormularioLogin, validarEmail } from '../../utils/validaciones';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
@@ -37,17 +37,13 @@ const InicioSesion = () => {
   
   // Estado para rastrear qué campos han sido tocados por el usuario
   const [tocado, setTocado] = useState({});
-  
-  // Hook para navegación programática entre rutas
-  const navigate = useNavigate();
 
   // Usar el hook personalizado del Context para obtener funciones y estados
   const { 
     login, 
     cargandoLogin, 
     error, 
-    limpiarError,
-    estaAutenticado 
+    limpiarError 
   } = useAuth();
 
   /**
