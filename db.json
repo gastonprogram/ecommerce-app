@@ -65,6 +65,104 @@
       "fechaInicio": "2025-09-06T14:13:36.094Z",
       "fechaExpiracion": "2025-09-07T14:13:36.095Z",
       "activa": true
+    },
+    {
+      "id": "4f69",
+      "usuarioId": "1",
+      "token": "token_1757367266176_v2u0o8ze3",
+      "fechaInicio": "2025-09-08T21:34:26.176Z",
+      "fechaExpiracion": "2025-09-09T21:34:26.176Z",
+      "activa": true
+    },
+    {
+      "id": "f389",
+      "usuarioId": "1",
+      "token": "token_1757367443075_lb0ya9sk4",
+      "fechaInicio": "2025-09-08T21:37:23.075Z",
+      "fechaExpiracion": "2025-09-09T21:37:23.075Z",
+      "activa": true
+    },
+    {
+      "id": "b1db",
+      "usuarioId": "1",
+      "token": "token_1757367593900_khedzyzia",
+      "fechaInicio": "2025-09-08T21:39:53.900Z",
+      "fechaExpiracion": "2025-09-09T21:39:53.900Z",
+      "activa": true
+    },
+    {
+      "id": "2f3c",
+      "usuarioId": "1",
+      "token": "token_1757368770776_tm64o3sx4",
+      "fechaInicio": "2025-09-08T21:59:30.776Z",
+      "fechaExpiracion": "2025-09-09T21:59:30.776Z",
+      "activa": true
+    },
+    {
+      "id": "4ea4",
+      "usuarioId": "1",
+      "token": "token_1757369955372_idiwax1r1",
+      "fechaInicio": "2025-09-08T22:19:15.372Z",
+      "fechaExpiracion": "2025-09-09T22:19:15.372Z",
+      "activa": true
+    },
+    {
+      "id": "c832",
+      "usuarioId": "1",
+      "token": "token_1757371190415_pmul2o9s9",
+      "fechaInicio": "2025-09-08T22:39:50.415Z",
+      "fechaExpiracion": "2025-09-09T22:39:50.415Z",
+      "activa": true
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "nombre": "Auriculares Bluetooth",
+      "descripcion": "Auriculares inalámbricos con cancelación de ruido y estuche de carga.",
+      "precio": 15999.99,
+      "stock": 25,
+      "imagen": "https://randomuser.me/api/portraits/men/1.jpg"
+    },
+    {
+      "id": 2,
+      "nombre": "Notebook Lenovo 15\"",
+      "descripcion": "Notebook Lenovo Intel i5, 8GB RAM, 512GB SSD, pantalla 15.6\".",
+      "precio": 499999.99,
+      "stock": 10,
+      "imagen": "https://randomuser.me/api/portraits/men/2.jpg"
+    },
+    {
+      "id": 3,
+      "nombre": "Mouse Gamer RGB",
+      "descripcion": "Mouse óptico con luces RGB y 6 botones programables.",
+      "precio": 7999.5,
+      "stock": 40,
+      "imagen": "https://randomuser.me/api/portraits/men/3.jpg"
+    },
+    {
+      "id": 4,
+      "nombre": "Teclado Mecánico",
+      "descripcion": "Teclado mecánico retroiluminado con switches blue.",
+      "precio": 18999,
+      "stock": 15,
+      "imagen": "https://randomuser.me/api/portraits/men/4.jpg"
+    },
+    {
+      "id": 5,
+      "nombre": "Smartwatch Deportivo",
+      "descripcion": "Reloj inteligente con GPS, monitor de ritmo cardíaco y notificaciones.",
+      "precio": 25999.99,
+      "stock": 30,
+      "imagen": "https://randomuser.me/api/portraits/men/5.jpg"
+    },
+    {
+      "id": 6,
+      "nombre": "Parlante Bluetooth",
+      "descripcion": "Parlante portátil resistente al agua, 12 horas de batería.",
+      "precio": 11999,
+      "stock": 20,
+      "imagen": "https://randomuser.me/api/portraits/men/6.jpg"
     }
   ]
 }

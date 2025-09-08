@@ -7,7 +7,7 @@
  */
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { validarFormularioLogin, validarEmail } from '../../utils/validaciones';
 import { iniciarSesion } from '../../services/authService';
 import './Auth.css';
@@ -41,9 +41,6 @@ const InicioSesion = () => {
   
   // Estado para mostrar mensajes de éxito o error al usuario
   const [mensaje, setMensaje] = useState('');
-  
-  // Hook para navegación programática entre rutas
-  const navigate = useNavigate();
 
   /**
    * Maneja los cambios en los campos del formulario
