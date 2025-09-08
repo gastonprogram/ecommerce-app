@@ -4,12 +4,14 @@
  * Este componente maneja el formulario de inicio de sesión de usuarios.
  * Incluye validación de campos, manejo de errores, estados de carga
  * y redirección tras un login exitoso.
+ * 
+ * Utiliza el Context de autenticación para manejar el estado global.
  */
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { validarFormularioLogin, validarEmail } from '../../utils/validaciones';
-import { iniciarSesion } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
 /**
@@ -18,7 +20,7 @@ import './Auth.css';
  * Maneja todo el flujo de autenticación del usuario incluyendo:
  * - Captura de datos del formulario
  * - Validación en tiempo real
- * - Comunicación con el backend
+ * - Comunicación con el backend a través del Context
  * - Manejo de estados de la UI
  * 
  * @returns {JSX.Element} - Formulario de inicio de sesión
@@ -36,14 +38,17 @@ const InicioSesion = () => {
   // Estado para rastrear qué campos han sido tocados por el usuario
   const [tocado, setTocado] = useState({});
   
-  // Estado para controlar el indicador de carga durante el envío
-  const [cargando, setCargando] = useState(false);
-  
-  // Estado para mostrar mensajes de éxito o error al usuario
-  const [mensaje, setMensaje] = useState('');
-  
   // Hook para navegación programática entre rutas
   const navigate = useNavigate();
+
+  // Usar el hook personalizado del Context para obtener funciones y estados
+  const { 
+    login, 
+    cargandoLogin, 
+    error, 
+    limpiarError,
+    estaAutenticado 
+  } = useAuth();
 
   /**
    * Maneja los cambios en los campos del formulario
@@ -65,6 +70,11 @@ const InicioSesion = () => {
         ...prev,
         [name]: ''
       }));
+    }
+
+    // Limpiar errores del Context si existen
+    if (error) {
+      limpiarError();
     }
   };
 
@@ -107,39 +117,24 @@ const InicioSesion = () => {
       return;
     }
 
-    // Limpiar estados anteriores y activar indicador de carga
+    // Limpiar estados anteriores
     setErrores({});
-    setMensaje('');
-    setCargando(true);
+    limpiarError();
 
     try {
-      // Intentar iniciar sesión con las credenciales proporcionadas
-      const resultado = await iniciarSesion(formData.email, formData.password);
+      // Usar la función login del Context para iniciar sesión
+      const resultado = await login(formData.email, formData.password);
       
       if (resultado.success) {
-        // Login exitoso: mostrar mensaje y guardar datos del usuario
-        setMensaje(resultado.message);
-        console.log('Usuario logueado:', resultado.usuario);
-        
-        // Guardar token y datos del usuario en localStorage para persistencia
-        localStorage.setItem('token', resultado.token);
-        localStorage.setItem('usuario', JSON.stringify(resultado.usuario));
-        
-        // Mostrar mensaje de bienvenida (temporal, debería redirigir)
-        // TODO: Implementar redirección a dashboard
+        // Login exitoso: mostrar mensaje temporal
+        alert(`¡Inicio de sesión exitoso!`);
+        // TODO: Implementar redirección a dashboard cuando esté disponible
         // navigate('/dashboard');
-        alert(`¡Bienvenido ${resultado.usuario.nombre}!`);
-      } else {
-        // Login fallido: mostrar mensaje de error del servidor
-        setMensaje(resultado.message);
       }
+      // Los errores se manejan automáticamente en el Context
     } catch (error) {
-      // Error de conexión: mostrar mensaje genérico
-      setMensaje('Error de conexión. Verifica que el servidor esté funcionando.');
-      console.error('Error:', error);
-    } finally {
-      // Siempre desactivar el indicador de carga al finalizar
-      setCargando(false);
+      // Error inesperado
+      console.error('Error inesperado:', error);
     }
   };
 
@@ -190,15 +185,15 @@ const InicioSesion = () => {
           </div>
 
           {/* Botón de envío con estado de carga */}
-          <button type="submit" className="auth-button" disabled={cargando}>
-            {cargando ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+          <button type="submit" className="auth-button" disabled={cargandoLogin}>
+            {cargandoLogin ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
 
-        {/* Área de mensajes de éxito o error */}
-        {mensaje && (
-          <div className={`mensaje ${mensaje.includes('exitoso') || mensaje.includes('Bienvenido') ? 'success' : 'error'}`}>
-            {mensaje}
+        {/* Área de mensajes de error del Context */}
+        {error && (
+          <div className="mensaje error">
+            {error}
           </div>
         )}
 

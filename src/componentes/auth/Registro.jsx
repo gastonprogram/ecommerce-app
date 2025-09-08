@@ -4,6 +4,8 @@
  * Este componente maneja el formulario de registro de nuevos usuarios.
  * Incluye validación en tiempo real, verificación de fortaleza de contraseña,
  * comprobación de emails duplicados y manejo completo de errores y estados.
+ * 
+ * Utiliza el Context de autenticación para manejar el estado global.
  */
 
 import { useState } from 'react';
@@ -15,7 +17,8 @@ import {
   validarPassword, 
   validarConfirmPassword 
 } from '../../utils/validaciones';
-import { registrarUsuario, verificarEmailExistente } from '../../services/authService';
+import { verificarEmailExistente } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 import PasswordStrength from './PasswordStrength';
 import './Auth.css';
 
@@ -53,14 +56,16 @@ const Registro = () => {
   // Estado para controlar cuándo mostrar el componente de fortaleza de contraseña
   const [mostrarPasswordStrength, setMostrarPasswordStrength] = useState(false);
   
-  // Estado para controlar el indicador de carga durante el registro
-  const [cargando, setCargando] = useState(false);
-  
-  // Estado para mostrar mensajes de éxito o error al usuario
-  const [mensaje, setMensaje] = useState('');
-  
   // Hook para navegación programática entre rutas
   const navigate = useNavigate();
+
+  // Usar el hook personalizado del Context para obtener funciones y estados
+  const { 
+    registrar, 
+    cargandoRegistro, 
+    error, 
+    limpiarError 
+  } = useAuth();
 
   /**
    * Maneja los cambios en todos los campos del formulario de registro
@@ -86,6 +91,11 @@ const Registro = () => {
         ...prev,
         [name]: ''
       }));
+    }
+
+    // Limpiar errores del Context si existen
+    if (error) {
+      limpiarError();
     }
 
     // Validación especial en tiempo real para el campo de contraseña
@@ -207,26 +217,21 @@ const Registro = () => {
       return;
     }
 
-    // Limpiar estados anteriores y activar indicador de carga
+    // Limpiar estados anteriores
     setErrores({});
-    setMensaje('');
-    setCargando(true);
+    limpiarError();
 
     try {
-      // Intentar registrar el usuario con los datos del formulario
-      const resultado = await registrarUsuario({
+      // Usar la función registrar del Context
+      const resultado = await registrar({
         nombre: formData.nombre,
         email: formData.email,
         password: formData.password
-        // Nota: confirmPassword no se envía al backend, solo se usa para validación en frontend
+        // ACLARACION IMPORTANTE A TENER EN CUENTA: confirmPassword no se envía al backend, solo se usa para validación en frontend
       });
       
       if (resultado.success) {
-        // Registro exitoso: mostrar mensaje y limpiar formulario
-        setMensaje(resultado.message);
-        console.log('Usuario registrado:', resultado.usuario);
-        
-        // Resetear completamente el formulario a su estado inicial
+        // Registro exitoso: limpiar formulario
         setFormData({
           nombre: '',
           email: '',
@@ -238,22 +243,18 @@ const Registro = () => {
         setPasswordInfo(null);
         setMostrarPasswordStrength(false);
         
-        // Redirigir al login después de 2 segundos para que el usuario vea el mensaje
+        // Mostrar mensaje de éxito y redirigir
+        alert('Usuario registrado exitosamente. Serás redirigido al login.');
+        
+        // Redirigir al login después de mostrar el mensaje
         setTimeout(() => {
           navigate('/login');
-        }, 2000);
-        
-      } else {
-        // Registro fallido: mostrar mensaje de error del servidor
-        setMensaje(resultado.message);
+        }, 1000);
       }
+      // Los errores se manejan automáticamente en el Context
     } catch (error) {
-      // Error de conexión o del servidor: mostrar mensaje genérico
-      setMensaje('Error de conexión. Verifica que el servidor esté funcionando.');
-      console.error('Error:', error);
-    } finally {
-      // Siempre desactivar el indicador de carga al finalizar
-      setCargando(false);
+      // Error inesperado
+      console.error('Error inesperado:', error);
     }
   };
 
@@ -352,15 +353,15 @@ const Registro = () => {
           </div>
 
           {/* Botón de envío con estado de carga dinámico */}
-          <button type="submit" className="auth-button" disabled={cargando}>
-            {cargando ? 'Creando cuenta...' : 'Crear Cuenta'}
+          <button type="submit" className="auth-button" disabled={cargandoRegistro}>
+            {cargandoRegistro ? 'Creando cuenta...' : 'Crear Cuenta'}
           </button>
         </form>
 
-        {/* Área para mostrar mensajes de éxito o error */}
-        {mensaje && (
-          <div className={`mensaje ${mensaje.includes('exitoso') ? 'success' : 'error'}`}>
-            {mensaje}
+        {/* Área para mostrar mensajes de error del Context */}
+        {error && (
+          <div className="mensaje error">
+            {error}
           </div>
         )}
 
