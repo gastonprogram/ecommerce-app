@@ -21,8 +21,6 @@ import './App.css'
  */
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
         <Router>
           <div className="App">
             <Routes>
@@ -44,8 +42,6 @@ function App() {
             </Routes>
           </div>
         </Router>
-      </CartProvider>
-    </AuthProvider>
   )
 }
 
