@@ -15,12 +15,12 @@ Esta aplicación simula una tienda online moderna y funcional, permitiendo a los
 
 ## 🎯 Características principales
 
+- Formulario de autenticacion
 - Catálogo de productos dinámico
 - Carrito de compras interactivo
 - Detalle de productos
 - Búsqueda y filtrado de productos
-- Proceso de checkout simulado
-- Interfaz amigable y responsive
+- Interfaz amigable
 
 ## 🏫 Contexto académico
 
@@ -50,8 +50,6 @@ La aplicación estará disponible en `http://localhost:3000`.
 
 - Integración con backend y base de datos
 - Autenticación y registro de usuarios
-- Pasarela de pagos simulada
-- Panel de administración
 
 ## 🤝 Autores
 
