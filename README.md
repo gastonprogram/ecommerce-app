@@ -41,7 +41,7 @@ Este proyecto fue creado como trabajo práctico para la materia **Aplicaciones I
 
 3. **Ejecutar la aplicación:**
     ```bash
-    npm start
+    npm run dev
     ```
 
 La aplicación estará disponible en `http://localhost:3000`.
@@ -57,9 +57,9 @@ La aplicación estará disponible en `http://localhost:3000`.
 
 - **Pedro [PeppoScotti](https://github.com/PeppoScotti)**
 - **Gaston [gastonprogram](https://github.com/gastonprogram)**
-- **Santino [--](https://github.com/gastonprogram)**
+- **Santino [SantinoCastro](https://github.com/Gusabelu1)**
 - **Maximo [MaximoLopezMelgarejo](https://github.com/maximolopezmelgarejo)**
-- **Juan [--](https://github.com/gastonprogram)**
+- **Juan [--](https://github.com/Juanli255)**
 - **Valentina [--](https://github.com/gastonprogram)**
 - **Luciano [lverdini](https://github.com/lverdini)**
 
