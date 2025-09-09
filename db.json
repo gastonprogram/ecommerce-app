@@ -137,6 +137,22 @@
       "fechaInicio": "2025-09-08T23:17:29.861Z",
       "fechaExpiracion": "2025-09-09T23:17:29.861Z",
       "activa": true
+    },
+    {
+      "id": "ada0",
+      "usuarioId": "1",
+      "token": "token_1757454044861_wurqhydwl",
+      "fechaInicio": "2025-09-09T21:40:44.861Z",
+      "fechaExpiracion": "2025-09-10T21:40:44.861Z",
+      "activa": true
+    },
+    {
+      "id": "9d50",
+      "usuarioId": "1",
+      "token": "token_1757454269538_z0seh9jyv",
+      "fechaInicio": "2025-09-09T21:44:29.538Z",
+      "fechaExpiracion": "2025-09-10T21:44:29.538Z",
+      "activa": true
     }
   ],
   "products": [
@@ -150,7 +166,7 @@
     },
     {
       "id": 2,
-      "nombre": "Notebook Lenovo 15\"",
+      "nombre": "Notebook Lenovo 15.6\"",
       "descripcion": "Notebook Lenovo Intel i5, 8GB RAM, 512GB SSD, pantalla 15.6\".",
       "precio": 499999.99,
       "stock": 10,

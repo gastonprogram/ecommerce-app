@@ -8,8 +8,7 @@
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { InicioSesion, Registro } from './componentes/auth'
-import { AuthProvider } from './context/AuthContext'
-import { Cart, CartProvider } from './componentes/cart'
+import { Cart } from './componentes/cart'
 import './App.css'
 
 /**
