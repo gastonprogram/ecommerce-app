@@ -59,6 +59,6 @@ La aplicación estará disponible en `http://localhost:3000`.
 - **Gaston [gastonprogram](https://github.com/gastonprogram)**
 - **Santino [SantinoCastro](https://github.com/Gusabelu1)**
 - **Maximo [MaximoLopezMelgarejo](https://github.com/maximolopezmelgarejo)**
-- **Juan [--](https://github.com/Juanli255)**
-- **Valentina [--](https://github.com/gastonprogram)**
+- **Juan [JuanLi](https://github.com/Juanli255)**
+- **Valentina [Valentina](https://github.com/deleonvalentina)**
 - **Luciano [lverdini](https://github.com/lverdini)**
