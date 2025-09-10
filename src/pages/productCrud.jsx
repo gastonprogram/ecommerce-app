@@ -39,6 +39,7 @@ export default function ProductCrud() {
     image: "",
     description: ""
   });
+  const [imageFile, setImageFile] = useState(null);
 
   // Estados de UI
   const [loading, setLoading] = useState(true);
@@ -91,6 +92,7 @@ export default function ProductCrud() {
       image: "",
       description: ""
     });
+    setImageFile(null);
     setEditingProduct(null);
     setIsCreating(false);
     setError(null);
@@ -106,6 +108,21 @@ export default function ProductCrud() {
       ...prev,
       [name]: value
     }));
+  };
+
+  /**
+   * Manejar cambio en el archivo de imagen
+   */
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      // Guardar solo el nombre del archivo en formData
+      setFormData(prev => ({
+        ...prev,
+        image: file.name
+      }));
+    }
   };
 
   /**
@@ -265,6 +282,7 @@ export default function ProductCrud() {
       image: product.image || "",
       description: product.description
     });
+    setImageFile(null);
     setError(null);
     setSuccess("");
   };
@@ -393,16 +411,20 @@ export default function ProductCrud() {
                 <div className="form-group">
                   <label htmlFor="image" className="form-label">Imagen</label>
                   <input
-                    type="text"
+                    type="file"
                     id="image"
                     name="image"
-                    value={formData.image}
-                    onChange={handleInputChange}
+                    onChange={handleImageChange}
                     className="form-input"
-                    placeholder="nombre-imagen.jpg (ej: laptop.jpg)"
+                    accept="image/*"
                   />
+                  {formData.image && (
+                    <small className="form-help">
+                      Archivo seleccionado: {formData.image}
+                    </small>
+                  )}
                   <small className="form-help">
-                    Nombre del archivo de imagen (debe estar en /public/assets/)
+                    Selecciona una imagen para el producto (JPG, PNG, etc.)
                   </small>
                 </div>
 

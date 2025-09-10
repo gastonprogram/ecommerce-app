@@ -41,15 +41,9 @@
    ======================================== */
 
 .crud-layout {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 32px;
-  grid-template-columns: 1fr;
-}
-
-/* Cuando hay formulario activo, usar layout de dos columnas */
-.crud-layout:has(.crud-form-section) {
-  grid-template-columns: 500px 1fr;
-  align-items: start;
 }
 
 /* ========================================
@@ -57,8 +51,7 @@
    ======================================== */
 
 .crud-form-section {
-  position: sticky;
-  top: 32px;
+  width: 100%;
 }
 
 .form-card {
@@ -115,6 +108,27 @@
   transition: border-color 0.2s ease;
   background: #fff;
   color: var(--text);
+}
+
+.form-input[type="file"] {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.form-input[type="file"]::-webkit-file-upload-button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-right: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.form-input[type="file"]::-webkit-file-upload-button:hover {
+  background: var(--primary-dark);
 }
 
 .form-input:focus,
@@ -372,14 +386,7 @@
    ======================================== */
 
 @media (max-width: 1200px) {
-  .crud-layout:has(.crud-form-section) {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
-  
-  .crud-form-section {
-    position: static;
-  }
+  /* Ya no es necesario cambiar el layout para pantallas medianas */
 }
 
 @media (max-width: 768px) {
