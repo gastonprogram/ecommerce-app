@@ -9,7 +9,7 @@
  */
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { validarFormularioLogin, validarEmail } from '../../utils/validaciones';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
@@ -22,10 +22,14 @@ import './Auth.css';
  * - Validación en tiempo real
  * - Comunicación con el backend a través del Context
  * - Manejo de estados de la UI
+ * - Redirección automática al home tras login exitoso
  * 
  * @returns {JSX.Element} - Formulario de inicio de sesión
  */
 const InicioSesion = () => {
+  // Hook de navegación para redireccionar después del login
+  const navigate = useNavigate();
+  
   // Estado para almacenar los datos del formulario
   const [formData, setFormData] = useState({
     email: '',
@@ -122,10 +126,9 @@ const InicioSesion = () => {
       const resultado = await login(formData.email, formData.password);
       
       if (resultado.success) {
-        // Login exitoso: mostrar mensaje temporal
-        alert(`¡Inicio de sesión exitoso!`);
-        // TODO: Implementar redirección a dashboard cuando esté disponible
-        // navigate('/dashboard');
+        // Login exitoso: redireccionar al home
+        console.log('¡Inicio de sesión exitoso! Redirigiendo al home...');
+        navigate('/');
       }
       // Los errores se manejan automáticamente en el Context
     } catch (error) {

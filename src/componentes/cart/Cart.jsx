@@ -12,7 +12,7 @@
  * - Botones para eliminar productos individuales
  * - Botón para vaciar carrito completo
  * - Cálculo automático del total
- * - Integración con API de productos
+ * - Mensaje informativo cuando el carrito está vacío
  */
 
 import { useCart } from "./CartProvider";
@@ -36,7 +36,6 @@ const Cart = () => {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
-        console.log(data);
       })
       .catch(() => setProducts([]));
   }, []);
@@ -54,31 +53,15 @@ const Cart = () => {
    */
   const total = cart.reduce((acc, item) => {
     const prod = getProduct(item.id);
-    return acc + (prod ? prod.precio * item.quantity : 0);
+    return acc + (prod ? prod.price * item.quantity : 0);
   }, 0);
-
-  // Función para agregar productos de prueba al carrito
-  const { addToCart } = useCart();
-  /**
-   * Función para agregar productos de prueba al carrito
-   * Útil para testing y demostración
-   */
-  const agregarPrueba = () => {
-    // IDs de productos de ejemplo (ajusta según tu db.json)
-    const ids = [1, 2, 3];
-    ids.forEach((id) => {
-      const prod = products.find((p) => p.id === id);
-      if (prod) addToCart(prod);
-    });
-  };
-
 
   // Renderizado condicional: si el carrito está vacío, mostrar mensaje
   if (cart.length === 0) {
     return (
       <div className="cart-empty">
         <h2>Tu carrito está vacío</h2>
-        <button className="cart-add-demo-btn" onClick={agregarPrueba}>Agregar productos de prueba</button>
+        <p>Explora nuestro catálogo y agrega productos para comenzar tu compra</p>
       </div>
     );
   }
@@ -107,8 +90,12 @@ const Cart = () => {
               <tr key={item.id}>
                 {/* Información del producto */}
                 <td className="cart-product">
-                  <img className="cart-product-img" src={prod.imagen} alt={prod.nombre} />
-                  <span>{prod.nombre || "Producto"}</span>
+                  <img 
+                    className="cart-product-img" 
+                    src={prod.image ? `/assets/${prod.image}` : "https://via.placeholder.com/60x60"} 
+                    alt={prod.name || item.name} 
+                  />
+                  <span>{prod.name || item.name || "Producto"}</span>
                 </td>
                 {/* Control de cantidad */}
                 <td>
@@ -121,9 +108,9 @@ const Cart = () => {
                   />
                 </td>
                 {/* Precio unitario */}
-                <td>${prod.precio?.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</td>
+                <td>${(prod.price || item.price || 0).toLocaleString("es-AR", { minimumFractionDigits: 2 })}</td>
                 {/* Subtotal del producto */}
-                <td>${((prod.precio || 0) * item.quantity).toLocaleString("es-AR", { minimumFractionDigits: 2 })}</td>
+                <td>${((prod.price || item.price || 0) * item.quantity).toLocaleString("es-AR", { minimumFractionDigits: 2 })}</td>
                 {/* Botón para eliminar producto */}
                 <td>
                   <button className="cart-remove-btn" onClick={() => removeFromCart(item.id)}>Eliminar</button>
