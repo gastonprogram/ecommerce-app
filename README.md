@@ -46,7 +46,7 @@ Este proyecto fue creado como trabajo práctico para la materia **Aplicaciones I
    npm run dev
    ```
 
-La aplicación estará disponible en `http://localhost:3000`.
+La aplicación estará disponible en `http://localhost:5173`.
 
 ## 💡 Próximas mejoras
 
