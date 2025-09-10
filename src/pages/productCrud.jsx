@@ -144,8 +144,11 @@ export default function ProductCrud() {
       setSubmitting(true);
       setError(null);
 
-      // Generar ID automáticamente (temporal, el servidor debería hacerlo)
-      const newId = String(Date.now());
+      // Generar ID secuencial: encontrar el ID más alto y sumar 1
+      const maxId = products.length > 0 
+        ? Math.max(...products.map(p => Number(p.id) || 0))
+        : 0;
+      const newId = String(maxId + 1);
       
       const productData = {
         id: newId,
