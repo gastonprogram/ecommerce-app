@@ -10,6 +10,25 @@
  */
 
 /* ========================================
+   RESET DE ESTILOS PARA FORMULARIOS DE AUTH
+   ======================================== */
+
+/* Anular cualquier interferencia de CSS global */
+.auth-container *,
+.auth-container *::before,
+.auth-container *::after {
+  box-sizing: border-box !important;
+}
+
+.auth-container input[type="text"],
+.auth-container input[type="email"],
+.auth-container input[type="password"] {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* ========================================
    CONTENEDOR PRINCIPAL
    ======================================== */
 
@@ -58,23 +77,28 @@
 
 /* Contenedor del formulario con layout vertical */
 .auth-form {
-  display: flex;
-  flex-direction: column; /* Elementos apilados verticalmente */
-  gap: 20px;             /* Espaciado uniforme entre elementos */
+  display: flex !important;
+  flex-direction: column !important; /* Elementos apilados verticalmente */
+  gap: 20px !important;             /* Espaciado uniforme entre elementos */
+  width: 100% !important;
 }
 
 /* Grupo de campos (label + input + error) */
-.form-group {
-  display: flex;
-  flex-direction: column; /* Label arriba, input abajo */
-  gap: 8px;              /* Espaciado pequeño entre label e input */
+.auth-form .form-group {
+  display: flex !important;
+  flex-direction: column !important; /* Label arriba, input abajo */
+  gap: 8px !important;              /* Espaciado pequeño entre label e input */
+  width: 100% !important;
+  position: relative !important;
 }
 
 /* Etiquetas de los campos */
-.form-label {
-  font-weight: 500;   /* Peso medio para destacar */
-  color: #374151;     /* Color gris medio */
-  font-size: 14px;    /* Tamaño de fuente pequeño pero legible */
+.auth-form .form-label {
+  font-weight: 500 !important;   /* Peso medio para destacar */
+  color: #374151 !important;     /* Color gris medio */
+  font-size: 14px !important;    /* Tamaño de fuente pequeño pero legible */
+  text-align: left !important;   /* Alineación a la izquierda */
+  margin-bottom: 4px !important;
 }
 
 /* ========================================
@@ -82,38 +106,45 @@
    ======================================== */
 
 /* Estilo base para todos los inputs */
-.form-input {
-  padding: 12px 16px;              /* Espaciado interno cómodo */
-  border: 2px solid #e2e8f0;       /* Borde gris claro */
-  border-radius: 8px;              /* Bordes redondeados */
-  font-size: 16px;                 /* Tamaño de fuente estándar */
-  transition: border-color 0.2s ease; /* Animación suave del borde */
-  background-color: #ffffff;        /* Fondo blanco */
-  color: #1a202c;                  /* Color del texto oscuro */
+.auth-form .form-input {
+  padding: 12px 16px !important;              /* Espaciado interno cómodo */
+  border: 2px solid #e2e8f0 !important;       /* Borde gris claro */
+  border-radius: 8px !important;              /* Bordes redondeados */
+  font-size: 16px !important;                 /* Tamaño de fuente estándar */
+  transition: border-color 0.2s ease !important; /* Animación suave del borde */
+  background-color: #ffffff !important;        /* Fondo blanco */
+  color: #1a202c !important;                  /* Color del texto oscuro */
+  width: 100% !important;                      /* Ancho completo */
+  box-sizing: border-box !important;          /* Incluir padding en el cálculo */
+  text-align: left !important;                /* Alineación del texto a la izquierda */
+  direction: ltr !important;                   /* Dirección de texto de izquierda a derecha */
 }
 
 /* Estado de error en los inputs */
-.form-input.error {
-  border-color: #e53e3e;                    /* Borde rojo para errores */
-  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1); /* Sombra roja sutil */
+.auth-form .form-input.error {
+  border-color: #e53e3e !important;                    /* Borde rojo para errores */
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important; /* Sombra roja sutil */
 }
 
 /* Estilo del placeholder (texto de ayuda) */
-.form-input::placeholder {
-  color: #a0aec0; /* Color gris claro para el placeholder */
+.auth-form .form-input::placeholder {
+  color: #a0aec0 !important; /* Color gris claro para el placeholder */
+  text-align: left !important; /* Alineación del placeholder a la izquierda */
 }
 
 /* Estado de focus (cuando el usuario hace clic en el input) */
-.form-input:focus {
-  outline: none;                           /* Quitar outline por defecto */
-  border-color: #4299e1;                   /* Borde azul de enfoque */
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1); /* Sombra azul sutil */
+.auth-form .form-input:focus {
+  outline: none !important;                           /* Quitar outline por defecto */
+  border-color: #4299e1 !important;                   /* Borde azul de enfoque */
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1) !important; /* Sombra azul sutil */
+  text-align: left !important;                        /* Mantener alineación a la izquierda */
 }
 
 /* Estado de focus cuando hay error */
-.form-input.error:focus {
-  border-color: #e53e3e;                    /* Mantener borde rojo */
-  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1); /* Mantener sombra roja */
+.auth-form .form-input.error:focus {
+  border-color: #e53e3e !important;                    /* Mantener borde rojo */
+  box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1) !important; /* Mantener sombra roja */
+  text-align: left !important;                         /* Mantener alineación a la izquierda */
 }
 
 /* ========================================
@@ -121,11 +152,13 @@
    ======================================== */
 
 /* Mensajes de error que aparecen debajo de los inputs */
-.error-message {
-  color: #e53e3e;    /* Color rojo para errores */
-  font-size: 12px;   /* Tamaño de fuente pequeño */
-  margin-top: 4px;   /* Espaciado superior mínimo */
-  display: block;    /* Mostrar como bloque para ocupar toda la línea */
+.auth-form .error-message {
+  color: #e53e3e !important;    /* Color rojo para errores */
+  font-size: 12px !important;   /* Tamaño de fuente pequeño */
+  margin-top: 4px !important;   /* Espaciado superior mínimo */
+  display: block !important;    /* Mostrar como bloque para ocupar toda la línea */
+  text-align: left !important;  /* Alineación a la izquierda */
+  line-height: 1.3 !important;  /* Altura de línea para legibilidad */
 }
 
 /* ========================================
@@ -161,27 +194,30 @@
    ======================================== */
 
 /* Botón principal de autenticación */
-.auth-button {
-  padding: 14px;                        /* Espaciado interno generoso */
-  background-color: #4299e1;            /* Fondo azul */
-  color: white;                         /* Texto blanco */
-  border: none;                         /* Sin borde */
-  border-radius: 8px;                   /* Bordes redondeados */
-  font-size: 16px;                      /* Tamaño de fuente estándar */
-  font-weight: 600;                     /* Peso semi-negrita */
-  cursor: pointer;                      /* Cursor de mano */
-  transition: background-color 0.2s ease; /* Animación suave del color */
-  margin-top: 10px;                     /* Espaciado superior */
+.auth-form .auth-button {
+  padding: 14px !important;                        /* Espaciado interno generoso */
+  background-color: #4299e1 !important;            /* Fondo azul */
+  color: white !important;                         /* Texto blanco */
+  border: none !important;                         /* Sin borde */
+  border-radius: 8px !important;                   /* Bordes redondeados */
+  font-size: 16px !important;                      /* Tamaño de fuente estándar */
+  font-weight: 600 !important;                     /* Peso semi-negrita */
+  cursor: pointer !important;                      /* Cursor de mano */
+  transition: background-color 0.2s ease !important; /* Animación suave del color */
+  margin-top: 10px !important;                     /* Espaciado superior */
+  width: 100% !important;                          /* Ancho completo */
+  box-sizing: border-box !important;               /* Incluir padding en el cálculo */
+  text-align: center !important;                   /* Centrar el texto del botón */
 }
 
 /* Estado hover del botón */
-.auth-button:hover {
-  background-color: #3182ce; /* Azul más oscuro al pasar el mouse */
+.auth-form .auth-button:hover {
+  background-color: #3182ce !important; /* Azul más oscuro al pasar el mouse */
 }
 
 /* Estado activo del botón (cuando se hace clic) */
-.auth-button:active {
-  transform: translateY(1px); /* Efecto de presión hacia abajo */
+.auth-form .auth-button:active {
+  transform: translateY(1px) !important; /* Efecto de presión hacia abajo */
 }
 
 /* ========================================
