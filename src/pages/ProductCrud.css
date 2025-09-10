@@ -1,0 +1,449 @@
+/**
+ * ProductCrud.css - Estilos para la página de CRUD de productos
+ * 
+ * Este archivo contiene todos los estilos específicos para la administración
+ * de productos, manteniendo consistencia con el sistema de diseño existente.
+ */
+
+/* ========================================
+   CONTENEDOR PRINCIPAL
+   ======================================== */
+
+.product-crud-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+/* ========================================
+   HEADER DE LA PÁGINA
+   ======================================== */
+
+.crud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--card-border);
+}
+
+.crud-header h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* ========================================
+   LAYOUT PRINCIPAL
+   ======================================== */
+
+.crud-layout {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1fr;
+}
+
+/* Cuando hay formulario activo, usar layout de dos columnas */
+.crud-layout:has(.crud-form-section) {
+  grid-template-columns: 500px 1fr;
+  align-items: start;
+}
+
+/* ========================================
+   SECCIÓN DEL FORMULARIO
+   ======================================== */
+
+.crud-form-section {
+  position: sticky;
+  top: 32px;
+}
+
+.form-card {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+.form-card h2 {
+  margin: 0 0 24px 0;
+  color: var(--text);
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+/* ========================================
+   FORMULARIO DE PRODUCTO
+   ======================================== */
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.form-input,
+.form-textarea {
+  padding: 12px 16px;
+  border: 2px solid var(--card-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease;
+  background: #fff;
+  color: var(--text);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-help {
+  color: var(--text-light);
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+/* ========================================
+   ACCIONES DEL FORMULARIO
+   ======================================== */
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--card-border);
+}
+
+.form-actions .btn {
+  padding: 12px 24px;
+  font-weight: 600;
+}
+
+/* ========================================
+   SECCIÓN DE LISTA DE PRODUCTOS
+   ======================================== */
+
+.crud-list-section {
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.crud-list-section h2 {
+  margin: 0 0 24px 0;
+  color: var(--text);
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+/* ========================================
+   ESTADO VACÍO
+   ======================================== */
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-light);
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+/* ========================================
+   TABLA DE PRODUCTOS
+   ======================================== */
+
+.products-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.products-table th,
+.products-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.products-table th {
+  background: var(--muted);
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.products-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.products-table tbody tr:hover {
+  background: var(--primary-light);
+}
+
+.products-table tbody tr.editing {
+  background: rgba(37, 99, 235, 0.05);
+  border-left: 3px solid var(--primary);
+}
+
+/* ========================================
+   CELDAS ESPECÍFICAS
+   ======================================== */
+
+.product-name strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.product-name small {
+  display: block;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.price {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+.stock {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.stock.in-stock {
+  color: var(--success);
+}
+
+.stock.out-stock {
+  color: var(--danger);
+}
+
+.image-cell {
+  text-align: center;
+}
+
+.product-thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--card-border);
+}
+
+.no-image {
+  display: inline-block;
+  padding: 12px;
+  background: var(--muted);
+  color: var(--text-light);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  border: 1px solid var(--card-border);
+}
+
+/* ========================================
+   ACCIONES DE LA TABLA
+   ======================================== */
+
+.actions {
+  white-space: nowrap;
+}
+
+.actions .btn {
+  margin-right: 8px;
+}
+
+.actions .btn:last-child {
+  margin-right: 0;
+}
+
+/* ========================================
+   BOTONES
+   ======================================== */
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+  border: 1px solid var(--danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========================================
+   MENSAJES DE ESTADO
+   ======================================== */
+
+.mensaje {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.mensaje.success {
+  background: #f0fdf4;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+.mensaje.error {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 1200px) {
+  .crud-layout:has(.crud-form-section) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .crud-form-section {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-crud-page {
+    padding: 20px 16px;
+  }
+  
+  .crud-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .crud-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    justify-content: stretch;
+  }
+  
+  .form-actions .btn {
+    flex: 1;
+  }
+  
+  .products-table-container {
+    font-size: 0.8rem;
+  }
+  
+  .products-table th,
+  .products-table td {
+    padding: 8px 12px;
+  }
+  
+  .product-name small {
+    max-width: 150px;
+  }
+  
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .actions .btn {
+    margin-right: 0;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-table th:nth-child(1),
+  .products-table td:nth-child(1) {
+    display: none; /* Ocultar columna ID en móviles */
+  }
+  
+  .products-table th:nth-child(6),
+  .products-table td:nth-child(6) {
+    display: none; /* Ocultar columna imagen en móviles */
+  }
+}
