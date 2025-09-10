@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import ProductCard from "../components/ProductCard";
-import CategoryList from "../components/CategoryList";
+import ProductCard from "../componentes/products/productCard";
+import CategoryList from "../componentes/products/categoryList";
 
 export default function Home() {
   const [products, setProducts] = useState([]);

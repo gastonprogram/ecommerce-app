@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProductCard from "../components/ProductCard";
-import CategoryList from "../components/CategoryList";
+import ProductCard from "../componentes/products/productCard";
+import CategoryList from "../componentes/products/categoryList";
 
 export default function Categories() {
   const { id } = useParams();
