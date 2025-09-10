@@ -60,5 +60,5 @@ La aplicación estará disponible en `http://localhost:5173`.
 - **Santino [SantinoCastro](https://github.com/Gusabelu1)**
 - **Maximo [MaximoLopezMelgarejo](https://github.com/maximolopezmelgarejo)**
 - **Juan [JuanLi](https://github.com/Juanli255)**
-- **Valentina [Valentina](https://github.com/deleonvalentina)**
+- **Valentina [Valentina](https://github.com/deleonvalentina)** 
 - **Luciano [lverdini](https://github.com/lverdini)**
