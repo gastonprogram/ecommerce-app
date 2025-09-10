@@ -60,6 +60,7 @@ const Cart = () => {
   if (cart.length === 0) {
     return (
       <div className="cart-empty">
+        <i className="fas fa-shopping-cart" style={{ fontSize: '4rem', color: 'var(--text-light)', marginBottom: '20px' }}></i>
         <h2>Tu carrito está vacío</h2>
         <p>Explora nuestro catálogo y agrega productos para comenzar tu compra</p>
       </div>
@@ -69,7 +70,7 @@ const Cart = () => {
   // Renderizado principal: carrito con productos
   return (
     <div className="cart-container">
-      <h2 className="cart-title">Carrito de compras</h2>
+      <h2 className="cart-title">Carrito de compras ({cart.length} {cart.length === 1 ? 'producto' : 'productos'})</h2>
       
       {/* Tabla de productos en el carrito */}
       <table className="cart-table">
@@ -79,13 +80,16 @@ const Cart = () => {
             <th>Cantidad</th>
             <th>Precio</th>
             <th>Subtotal</th>
-            <th></th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {/* Mapear cada producto del carrito */}
           {cart.map((item) => {
             const prod = getProduct(item.id) || {};
+            const price = prod.price || item.price || 0;
+            const subtotal = price * item.quantity;
+            
             return (
               <tr key={item.id}>
                 {/* Información del producto */}
@@ -103,17 +107,24 @@ const Cart = () => {
                     className="cart-qty-input"
                     type="number"
                     min={1}
+                    max={99}
                     value={item.quantity}
                     onChange={e => updateQuantity(item.id, parseInt(e.target.value) || 1)}
                   />
                 </td>
                 {/* Precio unitario */}
-                <td>${(prod.price || item.price || 0).toLocaleString("es-AR", { minimumFractionDigits: 2 })}</td>
+                <td>USD {price.toFixed(2)}</td>
                 {/* Subtotal del producto */}
-                <td>${((prod.price || item.price || 0) * item.quantity).toLocaleString("es-AR", { minimumFractionDigits: 2 })}</td>
+                <td><strong>USD {subtotal.toFixed(2)}</strong></td>
                 {/* Botón para eliminar producto */}
                 <td>
-                  <button className="cart-remove-btn" onClick={() => removeFromCart(item.id)}>Eliminar</button>
+                  <button 
+                    className="cart-remove-btn" 
+                    onClick={() => removeFromCart(item.id)}
+                    title="Eliminar producto"
+                  >
+                    <i className="fas fa-trash"></i> Eliminar
+                  </button>
                 </td>
               </tr>
             );
@@ -123,9 +134,15 @@ const Cart = () => {
       
       {/* Acciones del carrito y total */}
       <div className="cart-actions">
-        <h3 className="cart-total">Total: ${total.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</h3>
-        <button className="cart-clear-btn" onClick={clearCart}>Vaciar carrito</button>
-        <button className="cart-checkout-btn">Finalizar compra</button>
+        <h3 className="cart-total">Total: USD {total.toFixed(2)}</h3>
+        <div>
+          <button className="cart-clear-btn" onClick={clearCart}>
+            <i className="fas fa-trash-alt"></i> Vaciar carrito
+          </button>
+          <button className="cart-checkout-btn">
+            <i className="fas fa-credit-card"></i> Finalizar compra
+          </button>
+        </div>
       </div>
     </div>
   );

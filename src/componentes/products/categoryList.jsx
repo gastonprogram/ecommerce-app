@@ -72,7 +72,7 @@ export default function CategoryList() {
                 to="/" 
                 className={isActiveRoute('/') ? 'active' : ''}
               >
-                📦 Todos los productos
+                Todos los productos
               </Link>
             </li>
             
@@ -83,7 +83,7 @@ export default function CategoryList() {
                   to={`/categories/${category.id}`}
                   className={isActiveRoute(`/categories/${category.id}`) ? 'active' : ''}
                 >
-                  🏷️ {category.name}
+                  {category.name}
                 </Link>
               </li>
             ))}

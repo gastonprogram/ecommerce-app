@@ -70,7 +70,7 @@ const Header = () => {
           {/* Botón de logout si el usuario está autenticado */}
           {estaAutenticado && (
             <button onClick={handleLogout} className="btn-logout" title="Cerrar sesión">
-              👤 Log out
+              Log out
             </button>
           )}
           

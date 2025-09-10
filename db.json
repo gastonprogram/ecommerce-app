@@ -177,6 +177,14 @@
       "fechaInicio": "2025-09-10T12:18:06.010Z",
       "fechaExpiracion": "2025-09-11T12:18:06.010Z",
       "activa": true
+    },
+    {
+      "id": "c5ff",
+      "usuarioId": "1",
+      "token": "token_1757510410309_f38bfmn59",
+      "fechaInicio": "2025-09-10T13:20:10.309Z",
+      "fechaExpiracion": "2025-09-11T13:20:10.310Z",
+      "activa": true
     }
   ],
   "products": [

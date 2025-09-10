@@ -54,7 +54,7 @@ export default function ProductCard({ product }) {
           </span>
           <div className="product-actions">
             <Link to={`/product/${product.id}`} className="btn btn-secondary">
-              Ver detalles
+                Ver detalles
             </Link>
             <button 
               onClick={handleAddToCart}
@@ -62,7 +62,7 @@ export default function ProductCard({ product }) {
               className="btn btn-primary"
               title={product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
             >
-              {product.stock === 0 ? "Sin stock" : "🛒 Agregar"}
+              {product.stock === 0 ? "Sin stock" : "Agregar"}
             </button>
           </div>
         </div>

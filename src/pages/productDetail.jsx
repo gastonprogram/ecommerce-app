@@ -83,31 +83,51 @@ export default function ProductDetail() {
       <button 
         onClick={() => navigate(-1)} 
         className="btn btn-secondary back-button"
-        style={{ marginBottom: '1rem' }}
       >
-        ← Volver
+        <i className="fas fa-arrow-left"></i> Volver
       </button>
       
-      <div className="detail-media">
-        <img src={imgSrc} alt={product.name} />
-      </div>
-      
-      <div className="detail-info">
-        <h2>{product.name}</h2>
-        <p className="detail-price">USD {Number(product.price).toFixed(2)}</p>
-        <p className="detail-desc">{product.description || "Sin descripción."}</p>
-        <p className={`detail-stock ${product.stock > 0 ? "in" : "out"}`}>
-          {product.stock > 0 ? `${product.stock} en stock` : "Sin stock"}
-        </p>
+      <div className="product-detail-content">
+        <div className="product-image-section">
+          <img src={imgSrc} alt={product.name} className="product-image" />
+        </div>
         
-        <button
-          className="btn btn-primary"
-          disabled={product.stock === 0}
-          onClick={handleAddToCart}
-          title={product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
-        >
-          {product.stock === 0 ? "Sin stock" : "🛒 Agregar al carrito"}
-        </button>
+        <div className="product-info-section">
+          <div className="product-category">Producto</div>
+          <h1>{product.name}</h1>
+          <div className="detail-price">USD {Number(product.price).toFixed(2)}</div>
+          
+          <div className={`product-stock ${product.stock > 0 ? "stock-available" : "stock-unavailable"}`}>
+            {product.stock > 0 ? `${product.stock} disponibles` : "Sin stock"}
+          </div>
+          
+          {product.description && (
+            <div className="product-description">
+              <h3>Descripción</h3>
+              <p>{product.description}</p>
+            </div>
+          )}
+          
+          <div className="purchase-section">
+            <button
+              className="btn btn-primary"
+              disabled={product.stock === 0}
+              onClick={handleAddToCart}
+              title={product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
+              style={{ width: '100%', padding: '12px 24px', fontSize: '1.1rem' }}
+            >
+              {product.stock === 0 ? (
+                <>
+                  <i className="fas fa-times-circle"></i> Sin stock
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-shopping-cart"></i> Agregar al carrito
+                </>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
