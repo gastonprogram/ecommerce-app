@@ -57,6 +57,7 @@ const Header = () => {
         {/* Navegación principal */}
         <nav className="nav">
           <Link to="/">Productos</Link>
+          {estaAutenticado && <Link to="/admin/products">Administrar Productos</Link>}
         </nav>
         
         {/* Sección de usuario y carrito */}
@@ -70,7 +71,7 @@ const Header = () => {
           {/* Botón de logout si el usuario está autenticado */}
           {estaAutenticado && (
             <button onClick={handleLogout} className="btn-logout" title="Cerrar sesión">
-              Log out
+              Log Out
             </button>
           )}
           

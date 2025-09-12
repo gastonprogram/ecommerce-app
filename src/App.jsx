@@ -14,6 +14,7 @@ import { Header, SimpleHeader } from './componentes/layout'
 import Home from "./pages/home";
 import Categories from "./pages/categories";
 import ProductDetail from "./pages/productDetail";
+import ProductCrud from "./pages/productCrud";
 import "./index.css";
 
 /**
@@ -63,6 +64,7 @@ function AppContent() {
           {/* Rutas de productos */}
           <Route path="/categories/:id" element={<Categories />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/admin/products" element={<ProductCrud />} />
 
           {/* Ruta del carrito */}
           <Route path="/cart" element={<Cart />} />
