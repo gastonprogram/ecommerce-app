@@ -24,11 +24,20 @@ import "./Cart.css";
  * 
  * @returns {JSX.Element} Interfaz completa del carrito
  */
+// Componente principal del carrito de compras
+// Se agregan comentarios en línea para la funcionalidad de cupones y descuentos
+
 const Cart = () => {
   // Obtener funciones y estado del carrito desde el contexto
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+
   // Estado local para almacenar productos cargados desde la API
   const [products, setProducts] = useState([]);
+
+  // Estado para el cupón y mensajes
+  const [coupon, setCoupon] = useState(""); // Guarda el texto del cupón ingresado
+  const [discount, setDiscount] = useState(0); // Porcentaje de descuento aplicado
+  const [couponMsg, setCouponMsg] = useState(""); // Mensaje informativo del cupón
 
   // Efecto para cargar productos desde la API al montar el componente
   useEffect(() => {
@@ -40,23 +49,40 @@ const Cart = () => {
       .catch(() => setProducts([]));
   }, []);
 
-  /**
-   * Función auxiliar para buscar un producto por ID
-   * @param {number} id - ID del producto a buscar
-   * @returns {Object|undefined} Producto encontrado o undefined
-   */
+  // Handler para aplicar cupón de descuento
+  const handleApplyCoupon = () => {
+    // Validar formato DESC(número)
+    const regex = /^DESC(\d{1,2})$/i;
+    const match = coupon.match(regex);
+    if (match) {
+      const value = parseInt(match[1]);
+      // Validar rango de descuento (1-99)
+      if (value >= 1 && value <= 99) {
+        setDiscount(value); // Aplica el descuento
+        setCouponMsg(`Cupón aplicado: ${value}% de descuento`);
+      } else {
+        setDiscount(0);
+        setCouponMsg("El cupón debe ser entre 1 y 99%");
+      }
+    } else {
+      setDiscount(0);
+      setCouponMsg("Cupón inválido. Usa el formato DESC10, DESC25, etc.");
+    }
+  };
+
+  // Calcula el precio con descuento aplicado
+  const applyDiscount = (amount) => discount > 0 ? amount * (1 - discount / 100) : amount;
+
+  // Busca un producto por ID
   const getProduct = (id) => products.find((p) => p.id === id);
-  
-  /**
-   * Calcular el total de la compra
-   * Suma el precio de cada producto multiplicado por su cantidad
-   */
+
+  // Calcula el total del carrito (sin descuento)
   const total = cart.reduce((acc, item) => {
     const prod = getProduct(item.id);
     return acc + (prod ? prod.price * item.quantity : 0);
   }, 0);
 
-  // Renderizado condicional: si el carrito está vacío, mostrar mensaje
+  // Si el carrito está vacío, muestra mensaje
   if (cart.length === 0) {
     return (
       <div className="cart-empty">
@@ -67,7 +93,7 @@ const Cart = () => {
     );
   }
 
-  // Renderizado principal: carrito con productos
+  // Render principal del carrito
   return (
     <div className="cart-container">
       <h2 className="cart-title">Carrito de compras ({cart.length} {cart.length === 1 ? 'producto' : 'productos'})</h2>
@@ -89,7 +115,8 @@ const Cart = () => {
             const prod = getProduct(item.id) || {};
             const price = prod.price || item.price || 0;
             const subtotal = price * item.quantity;
-            
+            const subtotalDiscount = applyDiscount(subtotal); // Subtotal con descuento
+
             return (
               <tr key={item.id}>
                 {/* Información del producto */}
@@ -113,9 +140,25 @@ const Cart = () => {
                   />
                 </td>
                 {/* Precio unitario */}
-                <td>USD {price.toFixed(2)}</td>
-                {/* Subtotal del producto */}
-                <td><strong>USD {subtotal.toFixed(2)}</strong></td>
+                <td>
+                  USD {price.toFixed(2)}
+                </td>
+                {/* Subtotal del producto con descuento visual */}
+                <td>
+                  {/* Si hay descuento, muestra el subtotal original tachado y el nuevo en verde */}
+                  {discount > 0 ? (
+                    <>
+                      <span style={{ textDecoration: "line-through", color: "#888", marginRight: 8 }}>
+                        USD {subtotal.toFixed(2)}
+                      </span>
+                      <span style={{ color: "green", fontWeight: "bold" }}>
+                        USD {subtotalDiscount.toFixed(2)} (-{discount}%)
+                      </span>
+                    </>
+                  ) : (
+                    <strong>USD {subtotal.toFixed(2)}</strong>
+                  )}
+                </td>
                 {/* Botón para eliminar producto */}
                 <td>
                   <button 
@@ -131,10 +174,70 @@ const Cart = () => {
           })}
         </tbody>
       </table>
-      
+      <div 
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          border: "2px solid #e3e6ee",
+          borderRadius: "16px",
+          padding: "8px 24px",
+          background: "#fff",
+          boxShadow: "none",
+          marginBottom: "12px",
+          minWidth: "120px",
+          minHeight: "48px",
+          gap: "8px"
+        }}
+      >
+        <span style={{ fontSize: "1.5rem", fontWeight: "500", color: "#1a2341" }}>
+          <i className="fas fa-ticket-alt" style={{ marginRight: "8px", color: "#1a2341" }}></i>
+        </span>
+        <input
+          type="text"
+          value={coupon}
+          onChange={e => setCoupon(e.target.value)}
+          placeholder="Ingresa tu cupón (ej: DESC10)"
+          style={{
+            fontFamily: "inherit",
+            fontSize: "1rem",
+            border: "none",
+            background: "transparent",
+            color: "#1a2341",
+            padding: "6px 10px",
+            outline: "none",
+            minWidth: "80px"
+          }}
+        />
+        <button
+          className="cart-clear-btn"
+          style={{ height: "32px", padding: "0 16px", display: "flex", alignItems: "center", borderRadius: "8px" }}
+          onClick={handleApplyCoupon}
+        >
+          Aplicar cupón
+        </button>
+      </div>
+      {/* Mensaje informativo del cupón */}
+      <div style={{ marginTop: "10px", color: discount > 0 ? "var(--success)" : "var(--danger)", fontWeight: "bold" }}>
+        {couponMsg}
+      </div>
       {/* Acciones del carrito y total */}
       <div className="cart-actions">
-        <h3 className="cart-total">Total: USD {total.toFixed(2)}</h3>
+        {/* Total del carrito con descuento visual */}
+        <h3 className="cart-total">
+          {/* Si hay descuento, muestra el total original tachado y el nuevo en verde */}
+          {discount > 0 ? (
+            <>
+              <span style={{ textDecoration: "line-through", color: "#888", marginRight: 8 }}>
+                Total: USD {total.toFixed(2)}
+              </span>
+              <span style={{ color: "green", fontWeight: "bold" }}>
+                USD {applyDiscount(total).toFixed(2)} (-{discount}%)
+              </span>
+            </>
+          ) : (
+            <>Total: USD {total.toFixed(2)}</>
+          )}
+        </h3>
         <div>
           <button className="cart-clear-btn" onClick={clearCart}>
             <i className="fas fa-trash-alt"></i> Vaciar carrito
