@@ -4,13 +4,12 @@ Proyecto de e-commerce realizado en **React**, desarrollado como parte de la mat
 
 ## 📚 Descripción
 
-Esta aplicación simula una tienda online moderna y funcional, permitiendo a los usuarios navegar productos, agregarlos al carrito y realizar compras de manera intuitiva y eficiente. El objetivo principal es aplicar los conocimientos adquiridos en la materia, enfocándose en la experiencia de usuario, la interacción y el diseño de interfaces dinámicas.
+Esta aplicación simula una tienda online moderna y funcional, permitiendo a los usuarios navegar productos, agregarlos al carrito y realizar compras. El objetivo principal es aplicar los conocimientos adquiridos en la materia, enfocándose en la experiencia de usuario, la interacción y el diseño de interfaces dinámicas.
 
 ## 🚀 Tecnologías utilizadas
 
 - **Frontend:** [React](https://reactjs.org/)
-- **Estilos:** CSS Modules / Styled Components (a definir)
-- **Gestión de estado:** Context API / Redux (a definir)
+- **Estilos:** CSS
 - **Routing:** React Router DOM
 
 ## 🎯 Características principales
@@ -24,7 +23,7 @@ Esta aplicación simula una tienda online moderna y funcional, permitiendo a los
 
 ## 🏫 Contexto académico
 
-Este proyecto fue creado como trabajo práctico para la materia **Aplicaciones Interactivas** en la **Universidad Argentina de la Empresa (UADE)**, poniendo en práctica conceptos de desarrollo frontend, usabilidad y diseño de experiencias digitales.
+Este proyecto fue creado como trabajo práctico para la materia **Aplicaciones Interactivas** en la **Universidad Argentina de la Empresa (UADE)**, poniendo en práctica conceptos de desarrollo frontend, usabilidad y diseño.
 
 ## 📦 Instalación y ejecución
 
@@ -43,7 +42,7 @@ Este proyecto fue creado como trabajo práctico para la materia **Aplicaciones I
 
 3. **Ejecutar la aplicación:**
    ```bash
-   npm run dev
+   npm run dev:full
    ```
 
 La aplicación estará disponible en `http://localhost:5173`.
