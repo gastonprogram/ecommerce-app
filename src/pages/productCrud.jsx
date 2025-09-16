@@ -15,7 +15,9 @@
  */
 
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { ProductForm, ProductTable } from "../componentes/products";
+import { loadInitialData, createProduct, updateProduct, deleteProduct } from "../services/productService";
+import { validateForm } from "../utils/validacionesProductos";
 import "./ProductCrud.css";
 
 /**
@@ -47,31 +49,24 @@ export default function ProductCrud() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState("");
 
-  // Base URL para la API
-  const API_BASE = "http://localhost:3000";
-
   /**
    * Cargar productos y categorías al inicializar el componente
    */
   useEffect(() => {
-    loadInitialData();
+    loadData();
   }, []);
 
   /**
    * Cargar datos iniciales (productos y categorías)
    */
-  const loadInitialData = async () => {
+  const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const [productsRes, categoriesRes] = await Promise.all([
-        axios.get(`${API_BASE}/products`),
-        axios.get(`${API_BASE}/categories`)
-      ]);
-
-      setProducts(productsRes.data);
-      setCategories(categoriesRes.data);
+      const data = await loadInitialData();
+      setProducts(data.products);
+      setCategories(data.categories);
     } catch (err) {
       setError("Error al cargar los datos: " + err.message);
       console.error("Error loading data:", err);
@@ -128,24 +123,12 @@ export default function ProductCrud() {
   /**
    * Validar los datos del formulario
    */
-  const validateForm = () => {
-    const errors = [];
-
-    if (!formData.name.trim()) errors.push("El nombre es requerido");
-    if (!formData.categoryId) errors.push("La categoría es requerida");
-    if (!formData.price || isNaN(formData.price) || Number(formData.price) <= 0) {
-      errors.push("El precio debe ser un número mayor a 0");
-    }
-    if (!formData.stock || isNaN(formData.stock) || Number(formData.stock) < 0) {
-      errors.push("El stock debe ser un número mayor o igual a 0");
-    }
-    if (!formData.description.trim()) errors.push("La descripción es requerida");
-
-    if (errors.length > 0) {
-      setError(errors.join(". "));
+  const validateFormData = () => {
+    const validation = validateForm(formData);
+    if (!validation.valid) {
+      setError(validation.message);
       return false;
     }
-
     return true;
   };
 
@@ -155,7 +138,7 @@ export default function ProductCrud() {
   const handleCreate = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    if (!validateFormData()) return;
 
     try {
       setSubmitting(true);
@@ -177,9 +160,9 @@ export default function ProductCrud() {
         description: formData.description.trim()
       };
 
-      const response = await axios.post(`${API_BASE}/products`, productData);
+      const newProduct = await createProduct(productData);
       
-      setProducts(prev => [...prev, response.data]);
+      setProducts(prev => [...prev, newProduct]);
       setSuccess("Producto creado exitosamente");
       resetForm();
       
@@ -200,7 +183,7 @@ export default function ProductCrud() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    if (!validateFormData()) return;
 
     try {
       setSubmitting(true);
@@ -216,11 +199,11 @@ export default function ProductCrud() {
         description: formData.description.trim()
       };
 
-      const response = await axios.put(`${API_BASE}/products/${editingProduct.id}`, productData);
+      const updatedProduct = await updateProduct(editingProduct.id, productData);
       
       setProducts(prev => 
         prev.map(product => 
-          product.id === editingProduct.id ? response.data : product
+          product.id === editingProduct.id ? updatedProduct : product
         )
       );
       
@@ -241,7 +224,7 @@ export default function ProductCrud() {
   /**
    * Eliminar un producto
    */
-  const handleDelete = async (productId) => {
+  const handleDeleteProduct = async (productId) => {
     if (!window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
       return;
     }
@@ -249,7 +232,7 @@ export default function ProductCrud() {
     try {
       setError(null);
       
-      await axios.delete(`${API_BASE}/products/${productId}`);
+      await deleteProduct(productId);
       
       setProducts(prev => prev.filter(product => product.id !== productId));
       setSuccess("Producto eliminado exitosamente");
@@ -332,213 +315,29 @@ export default function ProductCrud() {
       <div className="crud-layout">
         {/* Formulario */}
         {(isCreating || editingProduct) && (
-          <div className="crud-form-section">
-            <div className="form-card">
-              <h2>{editingProduct ? "Editar Producto" : "Crear Nuevo Producto"}</h2>
-              
-              <form 
-                onSubmit={editingProduct ? handleUpdate : handleCreate}
-                className="product-form"
-              >
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="name" className="form-label">Nombre *</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="Ingrese el nombre del producto"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="categoryId" className="form-label">Categoría *</label>
-                    <select
-                      id="categoryId"
-                      name="categoryId"
-                      value={formData.categoryId}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      required
-                    >
-                      <option value="">Seleccionar categoría</option>
-                      {categories.map(category => (
-                        <option key={category.id} value={category.id}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="price" className="form-label">Precio *</label>
-                    <input
-                      type="number"
-                      id="price"
-                      name="price"
-                      value={formData.price}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="0.00"
-                      min="0"
-                      step="0.01"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="stock" className="form-label">Stock *</label>
-                    <input
-                      type="number"
-                      id="stock"
-                      name="stock"
-                      value={formData.stock}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="0"
-                      min="0"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="image" className="form-label">Imagen</label>
-                  <input
-                    type="file"
-                    id="image"
-                    name="image"
-                    onChange={handleImageChange}
-                    className="form-input"
-                    accept="image/*"
-                  />
-                  {formData.image && (
-                    <small className="form-help">
-                      Archivo seleccionado: {formData.image}
-                    </small>
-                  )}
-                  <small className="form-help">
-                    Selecciona una imagen para el producto (JPG, PNG, etc.)
-                  </small>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="description" className="form-label">Descripción *</label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="form-textarea"
-                    placeholder="Descripción detallada del producto"
-                    rows="4"
-                    required
-                  />
-                </div>
-
-                <div className="form-actions">
-                  <button 
-                    type="button" 
-                    onClick={resetForm}
-                    className="btn btn-secondary"
-                    disabled={submitting}
-                  >
-                    Cancelar
-                  </button>
-                  <button 
-                    type="submit" 
-                    className="btn btn-primary"
-                    disabled={submitting}
-                  >
-                    {submitting ? "Guardando..." : (editingProduct ? "Actualizar" : "Crear")}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <ProductForm
+            editingProduct={editingProduct}
+            formData={formData}
+            categories={categories}
+            handleInputChange={handleInputChange}
+            handleImageChange={handleImageChange}
+            handleSubmit={editingProduct ? handleUpdate : handleCreate}
+            resetForm={resetForm}
+            submitting={submitting}
+          />
         )}
 
         {/* Lista de productos */}
-        <div className="crud-list-section">
-          <h2>Productos Existentes ({products.length})</h2>
-          
-          {products.length === 0 ? (
-            <div className="empty-state">
-              <p>No hay productos registrados</p>
-              <button onClick={startCreate} className="btn btn-primary">
-                Crear primer producto
-              </button>
-            </div>
-          ) : (
-            <div className="products-table-container">
-              <table className="products-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Categoría</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
-                    <th>Imagen</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map(product => (
-                    <tr 
-                      key={product.id} 
-                      className={editingProduct?.id === product.id ? "editing" : ""}
-                    >
-                      <td>{product.id}</td>
-                      <td className="product-name">
-                        <strong>{product.name}</strong>
-                        <small>{product.description}</small>
-                      </td>
-                      <td>{getCategoryName(product.categoryId)}</td>
-                      <td className="price">${Number(product.price).toFixed(2)}</td>
-                      <td className={`stock ${product.stock > 0 ? "in-stock" : "out-stock"}`}>
-                        {product.stock} unidades
-                      </td>
-                      <td className="image-cell">
-                        {product.image ? (
-                          <img 
-                            src={`/assets/${product.image}`} 
-                            alt={product.name}
-                            className="product-thumbnail"
-                          />
-                        ) : (
-                          <span className="no-image">Sin imagen</span>
-                        )}
-                      </td>
-                      <td className="actions">
-                        <button
-                          onClick={() => startEdit(product)}
-                          className="btn btn-sm btn-secondary"
-                          disabled={submitting}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          onClick={() => handleDelete(product.id)}
-                          className="btn btn-sm btn-danger"
-                          disabled={submitting}
-                        >
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+        <ProductTable
+          products={products}
+          categories={categories}
+          editingProduct={editingProduct}
+          submitting={submitting}
+          startEdit={startEdit}
+          handleDelete={handleDeleteProduct}
+          startCreate={startCreate}
+          getCategoryName={getCategoryName}
+        />
       </div>
     </div>
   );

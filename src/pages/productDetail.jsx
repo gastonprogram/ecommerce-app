@@ -84,7 +84,7 @@ export default function ProductDetail() {
         onClick={() => navigate(-1)} 
         className="btn btn-secondary back-button"
       >
-        <i className="fas fa-arrow-left"></i> Volver
+        ← Volver
       </button>
       
       <div className="product-detail-content">
@@ -116,15 +116,7 @@ export default function ProductDetail() {
               title={product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
               style={{ width: '100%', padding: '12px 24px', fontSize: '1.1rem' }}
             >
-              {product.stock === 0 ? (
-                <>
-                  <i className="fas fa-times-circle"></i> Sin stock
-                </>
-              ) : (
-                <>
-                  <i className="fas fa-shopping-cart"></i> Agregar al carrito
-                </>
-              )}
+              {product.stock === 0 ? "Sin stock" : "🛒 Agregar al carrito"}
             </button>
           </div>
         </div>

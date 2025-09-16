@@ -209,6 +209,14 @@
       "fechaInicio": "2025-09-16T00:54:44.815Z",
       "fechaExpiracion": "2025-09-17T00:54:44.816Z",
       "activa": true
+    },
+    {
+      "id": "1341",
+      "usuarioId": "1",
+      "token": "token_1757987837234_wdcnfahik",
+      "fechaInicio": "2025-09-16T01:57:17.234Z",
+      "fechaExpiracion": "2025-09-17T01:57:17.234Z",
+      "activa": true
     }
   ],
   "products": [
@@ -292,6 +300,42 @@
       "stock": 2,
       "image": "1Y8A5814.jpg",
       "description": "Dodge Challenger SRT. Nuevo Muscle Car 0KM."
+    },
+    {
+      "id": "11",
+      "name": "Mustang Shelby",
+      "categoryId": 3,
+      "price": 80000,
+      "stock": 1,
+      "image": "xxx-shelby.jpeg",
+      "description": "Mustang Shelby nuevo 0KM."
+    },
+    {
+      "id": "12",
+      "name": "MSI I7 14va 32GB RAM 1TB",
+      "categoryId": 1,
+      "price": 1500,
+      "stock": 64,
+      "image": "Thin-15-B12UCX-2667AR.webp",
+      "description": "MSI 32GB RAM 1TB 5090RTX"
+    },
+    {
+      "id": "13",
+      "name": "Adidas Yeezy",
+      "categoryId": 2,
+      "price": 120,
+      "stock": 45,
+      "image": "adidas.webp",
+      "description": "Adidas Yeezy comodidad extrema."
+    },
+    {
+      "id": "14",
+      "name": "Zapatillas Nike Deportivas",
+      "categoryId": 2,
+      "price": 30,
+      "stock": 10,
+      "image": "nike.jpg",
+      "description": "Zapatillas Deportivas para entrenamiento y fitness."
     }
   ],
   "categories": [
