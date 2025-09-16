@@ -10,7 +10,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { CartProvider } from "./componentes/cart";
 import { InicioSesion, Registro } from './componentes/auth'
 import { Cart } from './componentes/cart'
-import { Header, SimpleHeader } from './componentes/layout'
+import { Header, SimpleHeader, ProtectedRoute } from './componentes/layout'
 import Home from "./pages/home";
 import Categories from "./pages/categories";
 import ProductDetail from "./pages/productDetail";
@@ -64,7 +64,11 @@ function AppContent() {
           {/* Rutas de productos */}
           <Route path="/categories/:id" element={<Categories />} />
           <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/admin/products" element={<ProductCrud />} />
+          <Route path="/admin/products" element={
+            <ProtectedRoute>
+              <ProductCrud />
+            </ProtectedRoute>
+          } />
 
           {/* Ruta del carrito */}
           <Route path="/cart" element={<Cart />} />
