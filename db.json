@@ -39,6 +39,14 @@
       "password": "Pedro555!",
       "fechaRegistro": "2024-05-12T11:00:00.000Z",
       "activo": true
+    },
+    {
+      "id": "6",
+      "nombre": "maximo",
+      "email": "maximlopez@uade.edu.ar",
+      "password": "Maximo@123",
+      "fechaRegistro": "2025-09-16T13:11:46.434Z",
+      "activo": true
     }
   ],
   "sesiones": [
@@ -225,6 +233,14 @@
       "fechaInicio": "2025-09-16T13:01:25.275Z",
       "fechaExpiracion": "2025-09-17T13:01:25.275Z",
       "activa": true
+    },
+    {
+      "id": "c717",
+      "usuarioId": "6",
+      "token": "token_1758028312426_9uop7cgll",
+      "fechaInicio": "2025-09-16T13:11:52.426Z",
+      "fechaExpiracion": "2025-09-17T13:11:52.426Z",
+      "activa": true
     }
   ],
   "products": [
@@ -323,7 +339,7 @@
       "name": "MSI I7 14va 32GB RAM 1TB",
       "categoryId": 1,
       "price": 1500,
-      "stock": 64,
+      "stock": 58,
       "image": "Thin-15-B12UCX-2667AR.webp",
       "description": "MSI 32GB RAM 1TB 5090RTX"
     },
@@ -332,7 +348,7 @@
       "name": "Adidas Yeezy",
       "categoryId": 2,
       "price": 120,
-      "stock": 45,
+      "stock": 20,
       "image": "adidas.webp",
       "description": "Adidas Yeezy comodidad extrema."
     },
@@ -347,12 +363,12 @@
     },
     {
       "id": "15",
-      "name": "Volkswagen Fox 1.6 452HP",
+      "name": "Volkswagen Fox swap 2jz twin turbo 1132HP",
       "categoryId": 3,
-      "price": 11000,
+      "price": 50000,
       "stock": 1,
       "image": "FOX.jpeg",
-      "description": "Volkswagen Fox 1.6 año 2015. Durmio siempre bajo techo."
+      "description": "Volkswagen Fox \n-swap 2jz twin turbo 1132HP \n-2015\n-Durmio siempre bajo techo\n-Cazabobos."
     }
   ],
   "categories": [

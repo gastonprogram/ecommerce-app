@@ -17,6 +17,7 @@
 
 import { useCart } from "./CartProvider";
 import { useEffect, useState } from "react";
+import { checkoutWithStock } from "../../services/productService";
 import "./Cart.css";
 
 /**
@@ -38,6 +39,15 @@ const Cart = () => {
   const [coupon, setCoupon] = useState(""); // Guarda el texto del cupón ingresado
   const [discount, setDiscount] = useState(0); // Porcentaje de descuento aplicado
   const [couponMsg, setCouponMsg] = useState(""); // Mensaje informativo del cupón
+  // Estado de proceso de checkout
+  const [processing, setProcessing] = useState(false);
+  const [checkoutMsg, setCheckoutMsg] = useState("");
+  const [checkoutError, setCheckoutError] = useState("");
+  // Modal de éxito y resumen de compra
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [purchasedItems, setPurchasedItems] = useState([]);
+  const [purchasedTotal, setPurchasedTotal] = useState(0);
+  const [purchasedTotalWithDiscount, setPurchasedTotalWithDiscount] = useState(0);
 
   // Efecto para cargar productos desde la API al montar el componente
   useEffect(() => {
@@ -82,8 +92,57 @@ const Cart = () => {
     return acc + (prod ? prod.price * item.quantity : 0);
   }, 0);
 
+  // Finalizar compra: valida y descuenta stock vía servicio, luego limpia carrito
+  const handleCheckout = async () => {
+    try {
+      setProcessing(true);
+      setCheckoutMsg("");
+      setCheckoutError("");
+
+      // Ejecutar checkout (valida stock y descuenta en el servidor)
+      const result = await checkoutWithStock(cart.map(({ id, quantity }) => ({ id, quantity })));
+      if (!result.success) {
+        setCheckoutError(result.message || "No se pudo procesar la compra.");
+        return;
+      }
+
+      // Preparar resumen de compra ANTES de limpiar el carrito
+      const summaryItems = cart.map((item) => {
+        const prod = getProduct(item.id) || {};
+        const unitPrice = typeof prod.price === 'number' ? prod.price : (item.price || 0);
+        return {
+          id: item.id,
+          name: prod.name || item.name || 'Producto',
+          quantity: item.quantity,
+          price: unitPrice,
+          subtotal: unitPrice * item.quantity,
+          image: prod.image || item.image
+        };
+      });
+      const summaryTotal = summaryItems.reduce((acc, it) => acc + it.subtotal, 0);
+      const summaryTotalWithDiscount = discount > 0 ? summaryTotal * (1 - discount / 100) : summaryTotal;
+
+      setPurchasedItems(summaryItems);
+      setPurchasedTotal(summaryTotal);
+      setPurchasedTotalWithDiscount(summaryTotalWithDiscount);
+      setShowSuccess(true);
+
+      // Si todo ok: limpiar carrito y mostrar mensaje
+      clearCart();
+      setCheckoutMsg("¡Compra realizada con éxito! Gracias por tu compra.");
+      // Limpiar cupón
+      setCoupon("");
+      setDiscount(0);
+      setCouponMsg("");
+    } catch (err) {
+      setCheckoutError("Ocurrió un error al finalizar la compra. Intenta nuevamente.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   // Si el carrito está vacío, muestra mensaje
-  if (cart.length === 0) {
+  if (cart.length === 0 && !showSuccess) {
     return (
       <div className="cart-empty">
         <i className="fas fa-shopping-cart" style={{ fontSize: '4rem', color: 'var(--text-light)', marginBottom: '20px' }}></i>
@@ -134,9 +193,13 @@ const Cart = () => {
                     className="cart-qty-input"
                     type="number"
                     min={1}
-                    max={99}
+                    max={prod?.stock ?? 99}
                     value={item.quantity}
-                    onChange={e => updateQuantity(item.id, parseInt(e.target.value) || 1)}
+                    onChange={e => {
+                      const parsed = parseInt(e.target.value) || 1;
+                      const cap = prod && typeof prod.stock === 'number' ? Math.min(parsed, prod.stock) : parsed;
+                      updateQuantity(item.id, cap);
+                    }}
                   />
                 </td>
                 {/* Precio unitario */}
@@ -242,11 +305,87 @@ const Cart = () => {
           <button className="cart-clear-btn" onClick={clearCart}>
             <i className="fas fa-trash-alt"></i> Vaciar carrito
           </button>
-          <button className="cart-checkout-btn">
+          <button className="cart-checkout-btn" onClick={handleCheckout} disabled={processing}>
             <i className="fas fa-credit-card"></i> Finalizar compra
           </button>
         </div>
       </div>
+      {/* Mensajes de checkout */}
+      {checkoutMsg && (
+        <div style={{ marginTop: 12, color: "var(--success)", fontWeight: "bold" }}>{checkoutMsg}</div>
+      )}
+      {checkoutError && (
+        <div style={{ marginTop: 12, color: "var(--danger)", fontWeight: "bold" }}>{checkoutError}</div>
+      )}
+      {/* Modal de compra exitosa con resumen */}
+      {showSuccess && (
+        <div className="modal-overlay" role="dialog" aria-modal="true">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3><i className="fas fa-check-circle" style={{ color: 'var(--success)', marginRight: 8 }}></i> Compra exitosa</h3>
+              <button className="modal-close" onClick={() => setShowSuccess(false)} aria-label="Cerrar">×</button>
+            </div>
+            <div className="modal-body">
+              <p>Gracias por tu compra. Este es el resumen:</p>
+              <div className="purchase-summary">
+                <table className="summary-table">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Cant.</th>
+                      <th>Precio</th>
+                      <th>Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {purchasedItems.map((it) => (
+                      <tr key={it.id}>
+                        <td className="summary-product">
+                          {it.image ? (
+                            <img className="summary-img" src={`/assets/${it.image}`} alt={it.name} />
+                          ) : null}
+                          <span>{it.name}</span>
+                        </td>
+                        <td>{it.quantity}</td>
+                        <td>USD {Number(it.price).toFixed(2)}</td>
+                        <td><strong>USD {Number(it.subtotal).toFixed(2)}</strong></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="summary-totals">
+                  {discount > 0 ? (
+                    <>
+                      <div className="summary-line">
+                        <span>Total sin descuento</span>
+                        <span style={{ textDecoration: 'line-through', color: '#888' }}>USD {purchasedTotal.toFixed(2)}</span>
+                      </div>
+                      <div className="summary-line">
+                        <span>Descuento</span>
+                        <span>-{discount}%</span>
+                      </div>
+                      <div className="summary-line total">
+                        <span>Total pagado</span>
+                        <span>USD {purchasedTotalWithDiscount.toFixed(2)}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="summary-line total">
+                      <span>Total pagado</span>
+                      <span>USD {purchasedTotal.toFixed(2)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="cart-checkout-btn" onClick={() => setShowSuccess(false)}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

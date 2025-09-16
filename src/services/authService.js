@@ -99,8 +99,25 @@ export const registrarUsuario = async (datosUsuario) => {
       throw new Error('Este email ya está registrado');
     }
 
-    // Crear nuevo usuario
+    // Obtener usuarios para calcular un ID secuencial como string
+    let nuevoId = null;
+    try {
+      const usuarios = await apiRequest('/usuarios');
+      const maxId = usuarios
+        .map(u => {
+          const n = Number(u.id);
+          return Number.isFinite(n) ? n : 0;
+        })
+        .reduce((a, b) => Math.max(a, b), 0);
+      nuevoId = String(maxId + 1);
+    } catch (_) {
+      // Fallback si no se puede obtener la lista: usar timestamp
+      nuevoId = String(Date.now());
+    }
+
+    // Crear nuevo usuario con ID consistente (string)
     const nuevoUsuario = {
+      id: nuevoId,
       nombre: datosUsuario.nombre.trim(),
       email: datosUsuario.email.toLowerCase().trim(),
       password: datosUsuario.password,
@@ -150,3 +167,4 @@ export const verificarServidor = async () => {
     return false;
   }
 };
+

@@ -1,0 +1,299 @@
+   1  
+   2  /**
+   3   * Cart.jsx - Componente de visualización del carrito de compras
+   4   * 
+   5   * Este componente muestra todos los productos agregados al carrito,
+   6   * permite modificar cantidades, eliminar productos individuales,
+   7   * vaciar el carrito completo y muestra el total de la compra.
+   8   * 
+   9   * Características principales:
+  10   * - Visualización de productos del carrito en tabla
+  11   * - Controles para modificar cantidades
+  12   * - Botones para eliminar productos individuales
+  13   * - Botón para vaciar carrito completo
+  14   * - Cálculo automático del total
+  15   * - Mensaje informativo cuando el carrito está vacío
+  16   */
+  17  
+  18  import { useCart } from "./CartProvider";
+  19  import { useEffect, useState } from "react";
+  20  import { checkoutWithStock } from "../../services/productService";
+  21  import "./Cart.css";
+  22  
+  23  /**
+  24   * Componente principal del carrito de compras
+  25   * 
+  26   * @returns {JSX.Element} Interfaz completa del carrito
+  27   */
+  28  // Componente principal del carrito de compras
+  29  // Se agregan comentarios en línea para la funcionalidad de cupones y descuentos
+  30  
+  31  const Cart = () => {
+  32    // Obtener funciones y estado del carrito desde el contexto
+  33    const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  34  
+  35    // Estado local para almacenar productos cargados desde la API
+  36    const [products, setProducts] = useState([]);
+  37  
+  38    // Estado para el cupón y mensajes
+  39    const [coupon, setCoupon] = useState(""); // Guarda el texto del cupón ingresado
+  40    const [discount, setDiscount] = useState(0); // Porcentaje de descuento aplicado
+  41    const [couponMsg, setCouponMsg] = useState(""); // Mensaje informativo del cupón
+  42    // Estado de proceso de checkout
+  43    const [processing, setProcessing] = useState(false);
+  44    const [checkoutMsg, setCheckoutMsg] = useState("");
+  45    const [checkoutError, setCheckoutError] = useState("");
+  46  
+  47    // Efecto para cargar productos desde la API al montar el componente
+  48    useEffect(() => {
+  49      fetch("http://localhost:3000/products")
+  50        .then((res) => res.json())
+  51        .then((data) => {
+  52          setProducts(data);
+  53        })
+  54        .catch(() => setProducts([]));
+  55    }, []);
+  56  
+  57    // Handler para aplicar cupón de descuento
+  58    const handleApplyCoupon = () => {
+  59      // Validar formato DESC(número)
+  60      const regex = /^DESC(\d{1,2})$/i;
+  61      const match = coupon.match(regex);
+  62      if (match) {
+  63        const value = parseInt(match[1]);
+  64        // Validar rango de descuento (1-99)
+  65        if (value >= 1 && value <= 99) {
+  66          setDiscount(value); // Aplica el descuento
+  67          setCouponMsg(`Cupón aplicado: ${value}% de descuento`);
+  68        } else {
+  69          setDiscount(0);
+  70          setCouponMsg("El cupón debe ser entre 1 y 99%");
+  71        }
+  72      } else {
+  73        setDiscount(0);
+  74        setCouponMsg("Cupón inválido. Usa el formato DESC10, DESC25, etc.");
+  75      }
+  76    };
+  77  
+  78    // Calcula el precio con descuento aplicado
+  79    const applyDiscount = (amount) => discount > 0 ? amount * (1 - discount / 100) : amount;
+  80  
+  81    // Busca un producto por ID
+  82    const getProduct = (id) => products.find((p) => p.id === id);
+  83  
+  84    // Calcula el total del carrito (sin descuento)
+  85    const total = cart.reduce((acc, item) => {
+  86      const prod = getProduct(item.id);
+  87      return acc + (prod ? prod.price * item.quantity : 0);
+  88    }, 0);
+  89  
+  90    // Finalizar compra: valida y descuenta stock vía servicio, luego limpia carrito
+  91    const handleCheckout = async () => {
+  92      try {
+  93        setProcessing(true);
+  94        setCheckoutMsg("");
+  95        setCheckoutError("");
+  96  
+  97        // Ejecutar checkout (valida stock y descuenta en el servidor)
+  98        const result = await checkoutWithStock(cart.map(({ id, quantity }) => ({ id, quantity })));
+  99        if (!result.success) {
+ 100          setCheckoutError(result.message || "No se pudo procesar la compra.");
+ 101          return;
+ 102        }
+ 103  
+ 104        // Si todo ok: limpiar carrito y mostrar mensaje
+ 105        clearCart();
+ 106        setCheckoutMsg("¡Compra realizada con éxito! Gracias por tu compra.");
+ 107        // Opcional: limpiar cupón
+ 108        setCoupon("");
+ 109        setDiscount(0);
+ 110        setCouponMsg("");
+ 111      } catch (err) {
+ 112        setCheckoutError("Ocurrió un error al finalizar la compra. Intenta nuevamente.");
+ 113      } finally {
+ 114        setProcessing(false);
+ 115      }
+ 116    };
+ 117  
+ 118    // Si el carrito está vacío, muestra mensaje
+ 119    if (cart.length === 0) {
+ 120      return (
+ 121        <div className="cart-empty">
+ 122          <i className="fas fa-shopping-cart" style={{ fontSize: '4rem', color: 'var(--text-light)', marginBottom: '20px' }}></i>
+ 123          <h2>Tu carrito está vacío</h2>
+ 124          <p>Explora nuestro catálogo y agrega productos para comenzar tu compra</p>
+ 125        </div>
+ 126      );
+ 127    }
+ 128  
+ 129    // Render principal del carrito
+ 130    return (
+ 131      <div className="cart-container">
+ 132        <h2 className="cart-title">Carrito de compras ({cart.length} {cart.length === 1 ? 'producto' : 'productos'})</h2>
+ 133        
+ 134        {/* Tabla de productos en el carrito */}
+ 135        <table className="cart-table">
+ 136          <thead>
+ 137            <tr>
+ 138              <th>Producto</th>
+ 139              <th>Cantidad</th>
+ 140              <th>Precio</th>
+ 141              <th>Subtotal</th>
+ 142              <th>Acciones</th>
+ 143            </tr>
+ 144          </thead>
+ 145          <tbody>
+ 146            {/* Mapear cada producto del carrito */}
+ 147            {cart.map((item) => {
+ 148              const prod = getProduct(item.id) || {};
+ 149              const price = prod.price || item.price || 0;
+ 150              const subtotal = price * item.quantity;
+ 151              const subtotalDiscount = applyDiscount(subtotal); // Subtotal con descuento
+ 152  
+ 153              return (
+ 154                <tr key={item.id}>
+ 155                  {/* Información del producto */}
+ 156                  <td className="cart-product">
+ 157                    <img 
+ 158                      className="cart-product-img" 
+ 159                      src={prod.image ? `/assets/${prod.image}` : "https://via.placeholder.com/60x60"} 
+ 160                      alt={prod.name || item.name} 
+ 161                    />
+ 162                    <span>{prod.name || item.name || "Producto"}</span>
+ 163                  </td>
+ 164                  {/* Control de cantidad */}
+ 165                  <td>
+ 166                    <input
+ 167                      className="cart-qty-input"
+ 168                      type="number"
+ 169                      min={1}
+ 170                      max={prod?.stock ?? 99}
+ 171                      value={item.quantity}
+ 172                      onChange={e => {
+ 173                        const parsed = parseInt(e.target.value) || 1;
+ 174                        const cap = prod && typeof prod.stock === 'number' ? Math.min(parsed, prod.stock) : parsed;
+ 175                        updateQuantity(item.id, cap);
+ 176                      }}
+ 177                    />
+ 178                  </td>
+ 179                  {/* Precio unitario */}
+ 180                  <td>
+ 181                    USD {price.toFixed(2)}
+ 182                  </td>
+ 183                  {/* Subtotal del producto con descuento visual */}
+ 184                  <td>
+ 185                    {/* Si hay descuento, muestra el subtotal original tachado y el nuevo en verde */}
+ 186                    {discount > 0 ? (
+ 187                      <>
+ 188                        <span style={{ textDecoration: "line-through", color: "#888", marginRight: 8 }}>
+ 189                          USD {subtotal.toFixed(2)}
+ 190                        </span>
+ 191                        <span style={{ color: "green", fontWeight: "bold" }}>
+ 192                          USD {subtotalDiscount.toFixed(2)} (-{discount}%)
+ 193                        </span>
+ 194                      </>
+ 195                    ) : (
+ 196                      <strong>USD {subtotal.toFixed(2)}</strong>
+ 197                    )}
+ 198                  </td>
+ 199                  {/* Botón para eliminar producto */}
+ 200                  <td>
+ 201                    <button 
+ 202                      className="cart-remove-btn" 
+ 203                      onClick={() => removeFromCart(item.id)}
+ 204                      title="Eliminar producto"
+ 205                    >
+ 206                      <i className="fas fa-trash"></i> Eliminar
+ 207                    </button>
+ 208                  </td>
+ 209                </tr>
+ 210              );
+ 211            })}
+ 212          </tbody>
+ 213        </table>
+ 214        <div 
+ 215          style={{
+ 216            display: "inline-flex",
+ 217            alignItems: "center",
+ 218            border: "2px solid #e3e6ee",
+ 219            borderRadius: "16px",
+ 220            padding: "8px 24px",
+ 221            background: "#fff",
+ 222            boxShadow: "none",
+ 223            marginBottom: "12px",
+ 224            minWidth: "120px",
+ 225            minHeight: "48px",
+ 226            gap: "8px"
+ 227          }}
+ 228        >
+ 229          <span style={{ fontSize: "1.5rem", fontWeight: "500", color: "#1a2341" }}>
+ 230            <i className="fas fa-ticket-alt" style={{ marginRight: "8px", color: "#1a2341" }}></i>
+ 231          </span>
+ 232          <input
+ 233            type="text"
+ 234            value={coupon}
+ 235            onChange={e => setCoupon(e.target.value)}
+ 236            placeholder="Ingresa tu cupón (ej: DESC10)"
+ 237            style={{
+ 238              fontFamily: "inherit",
+ 239              fontSize: "1rem",
+ 240              border: "none",
+ 241              background: "transparent",
+ 242              color: "#1a2341",
+ 243              padding: "6px 10px",
+ 244              outline: "none",
+ 245              minWidth: "80px"
+ 246            }}
+ 247          />
+ 248          <button
+ 249            className="cart-clear-btn"
+ 250            style={{ height: "32px", padding: "0 16px", display: "flex", alignItems: "center", borderRadius: "8px" }}
+ 251            onClick={handleApplyCoupon}
+ 252          >
+ 253            Aplicar cupón
+ 254          </button>
+ 255        </div>
+ 256        {/* Mensaje informativo del cupón */}
+ 257        <div style={{ marginTop: "10px", color: discount > 0 ? "var(--success)" : "var(--danger)", fontWeight: "bold" }}>
+ 258          {couponMsg}
+ 259        </div>
+ 260        {/* Acciones del carrito y total */}
+ 261        <div className="cart-actions">
+ 262          {/* Total del carrito con descuento visual */}
+ 263          <h3 className="cart-total">
+ 264            {/* Si hay descuento, muestra el total original tachado y el nuevo en verde */}
+ 265            {discount > 0 ? (
+ 266              <>
+ 267                <span style={{ textDecoration: "line-through", color: "#888", marginRight: 8 }}>
+ 268                  Total: USD {total.toFixed(2)}
+ 269                </span>
+ 270                <span style={{ color: "green", fontWeight: "bold" }}>
+ 271                  USD {applyDiscount(total).toFixed(2)} (-{discount}%)
+ 272                </span>
+ 273              </>
+ 274            ) : (
+ 275              <>Total: USD {total.toFixed(2)}</>
+ 276            )}
+ 277          </h3>
+ 278          <div>
+ 279            <button className="cart-clear-btn" onClick={clearCart}>
+ 280              <i className="fas fa-trash-alt"></i> Vaciar carrito
+ 281            </button>
+ 282            <button className="cart-checkout-btn" onClick={handleCheckout} disabled={processing}>
+ 283              <i className="fas fa-credit-card"></i> Finalizar compra
+ 284            </button>
+ 285          </div>
+ 286        </div>
+ 287        {/* Mensajes de checkout */}
+ 288        {checkoutMsg && (
+ 289          <div style={{ marginTop: 12, color: "var(--success)", fontWeight: "bold" }}>{checkoutMsg}</div>
+ 290        )}
+ 291        {checkoutError && (
+ 292          <div style={{ marginTop: 12, color: "var(--danger)", fontWeight: "bold" }}>{checkoutError}</div>
+ 293        )}
+ 294      </div>
+ 295    );
+ 296  }
+ 297  
+ 298  // Exportación por defecto del componente
+ 299  export default Cart;
