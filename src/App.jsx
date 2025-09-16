@@ -64,6 +64,8 @@ function AppContent() {
           {/* Rutas de productos */}
           <Route path="/categories/:id" element={<Categories />} />
           <Route path="/product/:id" element={<ProductDetail />} />
+
+          {/* Rutas protegidas */}
           <Route path="/admin/products" element={
             <ProtectedRoute>
               <ProductCrud />

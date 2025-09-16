@@ -56,19 +56,8 @@ export const iniciarSesion = async (email, password) => {
       throw new Error('Cuenta desactivada. Contacta al administrador');
     }
 
-    // Crear sesión (simulado)
-    const sesion = {
-      usuarioId: usuario.id,
-      token: `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      fechaInicio: new Date().toISOString(),
-      fechaExpiracion: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24 horas
-      activa: true
-    };
-
-    await apiRequest('/sesiones', {
-      method: 'POST',
-      body: JSON.stringify(sesion),
-    });
+    // Generar token simple (sin guardar en db.json)
+    const token = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     return {
       success: true,
@@ -77,7 +66,7 @@ export const iniciarSesion = async (email, password) => {
         nombre: usuario.nombre,
         email: usuario.email,
       },
-      token: sesion.token,
+      token: token,
       message: 'Inicio de sesión exitoso'
     };
 
