@@ -336,6 +336,15 @@
       "stock": 10,
       "image": "nike.jpg",
       "description": "Zapatillas Deportivas para entrenamiento y fitness."
+    },
+    {
+      "id": "15",
+      "name": "Volkswagen Fox 1.6 452HP",
+      "categoryId": 3,
+      "price": 11000,
+      "stock": 1,
+      "image": "FOX.jpeg",
+      "description": "Volkswagen Fox 1.6 año 2015. Durmio siempre bajo techo."
     }
   ],
   "categories": [
