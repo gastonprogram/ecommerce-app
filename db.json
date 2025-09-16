@@ -201,6 +201,14 @@
       "fechaInicio": "2025-09-10T17:04:22.422Z",
       "fechaExpiracion": "2025-09-11T17:04:22.422Z",
       "activa": true
+    },
+    {
+      "id": "4d55",
+      "usuarioId": "1",
+      "token": "token_1757984084815_hcq5dksbx",
+      "fechaInicio": "2025-09-16T00:54:44.815Z",
+      "fechaExpiracion": "2025-09-17T00:54:44.816Z",
+      "activa": true
     }
   ],
   "products": [
@@ -232,13 +240,58 @@
       "description": "Zapatillas deportivas cómodas y resistentes."
     },
     {
-      "id": "4",
-      "name": "a",
-      "categoryId": 1,
-      "price": 111,
-      "stock": 11,
-      "image": "",
-      "description": "1"
+      "id": "5",
+      "name": "Gol Power 2010",
+      "categoryId": 3,
+      "price": 4000,
+      "stock": 1,
+      "image": "gol.webp",
+      "description": "Gol power año 2010 excelente estado, como nuevo. 150.000 KM. viene con repuestos originales"
+    },
+    {
+      "id": "6",
+      "name": "Dodge Polara 1975 500HP",
+      "categoryId": 3,
+      "price": 5500,
+      "stock": 1,
+      "image": "polara.jpg",
+      "description": "Dodge Polara 1975 en excelente estado."
+    },
+    {
+      "id": "7",
+      "name": "Peugeot 308 GTI",
+      "categoryId": 3,
+      "price": 19000,
+      "stock": 1,
+      "image": "308.webp",
+      "description": "Peugeot 308 GTI color azul francia"
+    },
+    {
+      "id": "8",
+      "name": "Renault 12",
+      "categoryId": 3,
+      "price": 2500,
+      "stock": 1,
+      "image": "renault.jpg",
+      "description": "Renault 12 como nuevo. 5.300KM"
+    },
+    {
+      "id": "9",
+      "name": "BMW serie 1 coupe",
+      "categoryId": 3,
+      "price": 12000,
+      "stock": 1,
+      "image": "619116_1_im.jpg",
+      "description": "BMW serie 1 coupe, color blanco 89.000KM"
+    },
+    {
+      "id": "10",
+      "name": "Dodge Challenger SRT",
+      "categoryId": 3,
+      "price": 65000,
+      "stock": 2,
+      "image": "1Y8A5814.jpg",
+      "description": "Dodge Challenger SRT. Nuevo Muscle Car 0KM."
     }
   ],
   "categories": [
@@ -249,6 +302,10 @@
     {
       "id": "2",
       "name": "Ropa"
+    },
+    {
+      "id": "3",
+      "name": "Vehiculos"
     }
   ]
 }
