@@ -12,100 +12,78 @@
  * - Hook personalizado useCart() para fácil acceso
  */
 
-import { createContext, useContext, useState, useEffect } from "react";
+// src/componentes/cart/CartProvider.jsx
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-// Crear el contexto del carrito que será compartido entre componentes
-const CartContext = createContext();
+const CartContext = createContext(null);
 
-/**
- * Componente proveedor del contexto del carrito
- * 
- * Envuelve la aplicación y proporciona el estado del carrito
- * y todas las funciones necesarias para manejarlo a todos
- * los componentes hijos.
- * 
- * @param {Object} props - Propiedades del componente
- * @param {ReactNode} props.children - Componentes hijos que tendrán acceso al contexto
- */
-const CartProvider = ({ children }) => {
-  // Inicializa el carrito desde sessionStorage si existe
+export function CartProvider({ children }) {
   const [cart, setCart] = useState(() => {
-    const stored = sessionStorage.getItem("cart");
-    return stored ? JSON.parse(stored) : [];
+    try {
+      const raw = localStorage.getItem("cart");
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
   });
 
-  // Guarda el carrito en sessionStorage cada vez que cambia
+  // Persistir en localStorage
   useEffect(() => {
-    sessionStorage.setItem("cart", JSON.stringify(cart));
+    try {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } catch {
+      // noop
+    }
   }, [cart]);
 
-  /**
-   * Función para agregar un producto al carrito
-   * Si el producto ya existe, incrementa su cantidad
-   * Si es nuevo, lo agrega con cantidad 1
-   * 
-   * @param {Object} product - Producto a agregar al carrito
-   */
-  const addToCart = (product) => {
+  // Añadir item (si ya existe suma cantidad)
+  const addToCart = (product, qty = 1) => {
     setCart((prev) => {
-      const exists = prev.find((item) => item.id === product.id);
-      if (exists) {
-        return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
+      const idx = prev.findIndex((i) => String(i.id) === String(product.id));
+      if (idx >= 0) {
+        const copy = [...prev];
+        const old = copy[idx];
+        copy[idx] = { ...old, quantity: (old.quantity || 0) + qty };
+        return copy;
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { id: product.id, name: product.name, price: product.price, image: product.image, quantity: qty }];
     });
   };
 
-  /**
-   * Función para eliminar completamente un producto del carrito
-   * 
-   * @param {number} id - ID del producto a eliminar
-   */
+  // Eliminar item
   const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+    setCart((prev) => prev.filter((i) => String(i.id) !== String(id)));
   };
 
-  /**
-   * Función para vaciar completamente el carrito
-   */
-  const clearCart = () => setCart([]);
-
-  /**
-   * Función para actualizar la cantidad de un producto específico
-   * La cantidad mínima es 1
-   * 
-   * @param {number} id - ID del producto
-   * @param {number} quantity - Nueva cantidad
-   */
-  const updateQuantity = (id, quantity) => {
+  // Actualizar cantidad (min 1)
+  const updateQuantity = (id, qty) => {
+    const n = Math.max(parseInt(qty || 1, 10), 1);
     setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
-      )
+      prev.map((i) => (String(i.id) === String(id) ? { ...i, quantity: n } : i))
     );
   };
 
-  return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, updateQuantity }}>
-      {children}
-    </CartContext.Provider>
+  // Vaciar carrito
+  const clearCart = () => setCart([]);
+
+  const value = useMemo(
+    () => ({
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+    }),
+    [cart]
   );
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
-// Exportación por defecto del componente provider
+export function useCart() {
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error("useCart debe usarse dentro de <CartProvider>");
+  return ctx;
+}
 export default CartProvider;
 
-/**
- * Hook personalizado para usar el contexto del carrito
- * Proporciona acceso fácil al estado y funciones del carrito
- * 
- * @returns {Object} Estado y funciones del carrito
- * 
- * Ejemplo de uso:
- * const { cart, addToCart, removeFromCart } = useCart();
- */
-export function useCart() {
-  return useContext(CartContext);
-}
