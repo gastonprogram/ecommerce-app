@@ -1,9 +1,9 @@
 /**
  * ProductCrud.jsx - Página de administración de productos
- * 
+ *
  * Permite crear, leer, actualizar y eliminar productos.
  * Incluye formulario de producto, lista de productos y funcionalidades de gestión.
- * 
+ *
  * Campos del producto:
  * - id (generado automáticamente)
  * - name
@@ -16,20 +16,25 @@
 
 import { useState, useEffect } from "react";
 import { ProductForm, ProductTable } from "../componentes/products";
-import { loadInitialData, createProduct, updateProduct, deleteProduct } from "../services/productService";
+import {
+  loadInitialData,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} from "../services/productService";
 import { validateForm } from "../utils/validacionesProductos";
 import "./ProductCrud.css";
 
 /**
  * Componente principal del CRUD de productos
- * 
+ *
  * @returns {JSX.Element} Página completa del CRUD de productos
  */
 export default function ProductCrud() {
   // Estados para productos y categorías
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  
+
   // Estados para el formulario
   const [editingProduct, setEditingProduct] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -39,9 +44,16 @@ export default function ProductCrud() {
     price: "",
     stock: "",
     image: "",
-    description: ""
+    description: "",
   });
   const [imageFile, setImageFile] = useState(null);
+
+  // 👉 Auto-scroll cuando se activa la edición
+  useEffect(() => {
+    if (editingProduct) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [editingProduct]);
 
   // Estados de UI
   const [loading, setLoading] = useState(true);
@@ -85,7 +97,7 @@ export default function ProductCrud() {
       price: "",
       stock: "",
       image: "",
-      description: ""
+      description: "",
     });
     setImageFile(null);
     setEditingProduct(null);
@@ -99,9 +111,9 @@ export default function ProductCrud() {
    */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -113,9 +125,9 @@ export default function ProductCrud() {
     if (file) {
       setImageFile(file);
       // Guardar solo el nombre del archivo en formData
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        image: file.name
+        image: file.name,
       }));
     }
   };
@@ -137,7 +149,7 @@ export default function ProductCrud() {
    */
   const handleCreate = async (e) => {
     e.preventDefault();
-    
+
     if (!validateFormData()) return;
 
     try {
@@ -145,11 +157,12 @@ export default function ProductCrud() {
       setError(null);
 
       // Generar ID secuencial: encontrar el ID más alto y sumar 1
-      const maxId = products.length > 0 
-        ? Math.max(...products.map(p => Number(p.id) || 0))
-        : 0;
+      const maxId =
+        products.length > 0
+          ? Math.max(...products.map((p) => Number(p.id) || 0))
+          : 0;
       const newId = String(maxId + 1);
-      
+
       const productData = {
         id: newId,
         name: formData.name.trim(),
@@ -157,18 +170,17 @@ export default function ProductCrud() {
         price: Number(formData.price),
         stock: Number(formData.stock),
         image: formData.image.trim(),
-        description: formData.description.trim()
+        description: formData.description.trim(),
       };
 
       const newProduct = await createProduct(productData);
-      
-      setProducts(prev => [...prev, newProduct]);
+
+      setProducts((prev) => [...prev, newProduct]);
       setSuccess("Producto creado exitosamente");
       resetForm();
-      
+
       // Limpiar mensaje de éxito después de 3 segundos
       setTimeout(() => setSuccess(""), 3000);
-      
     } catch (err) {
       setError("Error al crear el producto: " + err.message);
       console.error("Error creating product:", err);
@@ -182,7 +194,7 @@ export default function ProductCrud() {
    */
   const handleUpdate = async (e) => {
     e.preventDefault();
-    
+
     if (!validateFormData()) return;
 
     try {
@@ -196,23 +208,25 @@ export default function ProductCrud() {
         price: Number(formData.price),
         stock: Number(formData.stock),
         image: formData.image.trim(),
-        description: formData.description.trim()
+        description: formData.description.trim(),
       };
 
-      const updatedProduct = await updateProduct(editingProduct.id, productData);
-      
-      setProducts(prev => 
-        prev.map(product => 
+      const updatedProduct = await updateProduct(
+        editingProduct.id,
+        productData
+      );
+
+      setProducts((prev) =>
+        prev.map((product) =>
           product.id === editingProduct.id ? updatedProduct : product
         )
       );
-      
+
       setSuccess("Producto actualizado exitosamente");
       resetForm();
-      
+
       // Limpiar mensaje de éxito después de 3 segundos
       setTimeout(() => setSuccess(""), 3000);
-      
     } catch (err) {
       setError("Error al actualizar el producto: " + err.message);
       console.error("Error updating product:", err);
@@ -225,26 +239,27 @@ export default function ProductCrud() {
    * Eliminar un producto
    */
   const handleDeleteProduct = async (productId) => {
-    if (!window.confirm("¿Estás seguro de que deseas eliminar este producto?")) {
+    if (
+      !window.confirm("¿Estás seguro de que deseas eliminar este producto?")
+    ) {
       return;
     }
 
     try {
       setError(null);
-      
+
       await deleteProduct(productId);
-      
-      setProducts(prev => prev.filter(product => product.id !== productId));
+
+      setProducts((prev) => prev.filter((product) => product.id !== productId));
       setSuccess("Producto eliminado exitosamente");
-      
+
       // Si estábamos editando el producto eliminado, resetear el formulario
       if (editingProduct && editingProduct.id === productId) {
         resetForm();
       }
-      
+
       // Limpiar mensaje de éxito después de 3 segundos
       setTimeout(() => setSuccess(""), 3000);
-      
     } catch (err) {
       setError("Error al eliminar el producto: " + err.message);
       console.error("Error deleting product:", err);
@@ -263,7 +278,7 @@ export default function ProductCrud() {
       price: String(product.price),
       stock: String(product.stock),
       image: product.image || "",
-      description: product.description
+      description: product.description,
     });
     setImageFile(null);
     setError(null);
@@ -282,7 +297,7 @@ export default function ProductCrud() {
    * Obtener el nombre de la categoría por ID
    */
   const getCategoryName = (categoryId) => {
-    const category = categories.find(cat => cat.id === String(categoryId));
+    const category = categories.find((cat) => cat.id === String(categoryId));
     return category ? category.name : "Sin categoría";
   };
 
@@ -299,8 +314,8 @@ export default function ProductCrud() {
     <div className="product-crud-page">
       <div className="crud-header">
         <h1>Administración de Productos</h1>
-        <button 
-          onClick={startCreate} 
+        <button
+          onClick={startCreate}
           className="btn btn-primary"
           disabled={submitting}
         >
