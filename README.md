@@ -1,59 +1,170 @@
-# 🛒 E-commerce App
+# 🛒 E-commerce App – UADE
 
-Proyecto de e-commerce realizado en **React**, desarrollado como parte de la materia **Aplicaciones Interactivas** de la carrera Desarrollo de Software en **UADE**.
+Proyecto de e-commerce realizado en **React**, desarrollado como parte de la materia **Aplicaciones Interactivas** de la carrera **Desarrollo de Software en UADE**.
+
+---
 
 ## 📚 Descripción
 
-Esta aplicación simula una tienda online moderna y funcional, permitiendo a los usuarios navegar productos, agregarlos al carrito y realizar compras. El objetivo principal es aplicar los conocimientos adquiridos en la materia, enfocándose en la experiencia de usuario, la interacción y el diseño de interfaces dinámicas.
+Esta aplicación simula una **tienda online moderna y funcional**, permitiendo a los usuarios:
+
+- Navegar productos  
+- Agregarlos al carrito  
+- Finalizar compras con validación de stock  
+- Usar cupones de descuento  
+
+El objetivo principal es aplicar los conocimientos adquiridos en la materia, con foco en la experiencia de usuario, la interacción y el diseño de interfaces dinámicas.
+
+---
+
+## ⭐ Funcionalidades principales
+
+- 🔍 Búsqueda y filtrado de productos por categoría  
+- 🛒 Carrito persistente con gestión de cantidades  
+- 💰 Sistema de cupones de descuento  
+- 📦 Control de stock automático  
+- 🔐 Autenticación de usuarios  
+- ⚙️ Panel admin para gestión de productos  
+- 🎨 Interfaz responsive y moderna  
+
+---
 
 ## 🚀 Tecnologías utilizadas
 
-- **Frontend:** [React](https://reactjs.org/)
-- **Estilos:** CSS
-- **Routing:** React Router DOM
+- ⚛️ React 18 – Framework principal  
+- ⚡ Vite 5 – Build tool y dev server  
+- 🎨 CSS – Módulos y estilos propios  
+- 🛣️ React Router DOM – Navegación  
+- 📦 JSON Server – Simulación de backend  
+- ✅ ESLint – Linting de código  
 
-## 🎯 Características principales
+---
 
-- Formulario de autenticacion
-- Catálogo de productos dinámico
-- Carrito de compras interactivo
-- Detalle de productos
-- Búsqueda y filtrado de productos
-- Interfaz amigable
+## 🗂️ Estructura del proyecto
 
-## 🏫 Contexto académico
+ecommerce-app/
+├── public/
+│ └── assets/ # Logos e imágenes
+├── src/
+│ ├── componentes/ # Componentes reutilizables
+│ │ ├── auth/ # Login y registro
+│ │ ├── cart/ # Carrito (contexto y vistas)
+│ │ ├── layout/ # Header, footer
+│ │ └── products/ # Catálogo y formularios
+│ ├── context/ # Contextos globales (auth, etc.)
+│ ├── pages/ # Páginas principales (Home, Checkout, etc.)
+│ ├── services/ # Servicios (API y lógica de negocio)
+│ ├── App.jsx # Rutas principales
+│ └── main.jsx # Punto de entrada
+├── db.json # Base de datos local (JSON Server)
+├── package.json
+└── README.md
 
-Este proyecto fue creado como trabajo práctico para la materia **Aplicaciones Interactivas** en la **Universidad Argentina de la Empresa (UADE)**, poniendo en práctica conceptos de desarrollo frontend, usabilidad y diseño.
+yaml
+Copiar código
+
+---
+
+## 🖥️ Pantallas principales
+
+- 🏠 **Home / Catálogo** → listado de productos y búsqueda  
+- 📄 **Detalle de producto** → información ampliada + agregar al carrito  
+- 🛒 **Carrito** → gestión de cantidades, cupones y total  
+- 💳 **Checkout** → confirmación de compra, actualización de stock y limpieza automática del carrito  
+- 🔐 **Admin** → gestión de productos (crear, editar, eliminar)  
+
+---
 
 ## 📦 Instalación y ejecución
 
 1. **Clonar el repositorio:**
-
    ```bash
    git clone https://github.com/gastonprogram/ecommerce-app.git
    cd ecommerce-app
-   ```
+Instalar dependencias:
 
-2. **Instalar dependencias:**
+bash
+Copiar código
+npm install
+Levantar el frontend:
 
-   ```bash
-   npm install
-   ```
+bash
+Copiar código
+npm run dev
+👉 Disponible en: http://localhost:5173
 
-3. **Ejecutar la aplicación:**
-   ```bash
-   npm run dev:full
-   ```
+Levantar el backend simulado (JSON Server):
 
-La aplicación estará disponible en `http://localhost:5173`.
+bash
+Copiar código
+npx json-server --watch db.json --port 3000
+👉 Disponible en: http://localhost:3000
 
-## 💡 Próximas mejoras
+🛠️ Troubleshooting
+⚠️ Puerto 5173 ocupado
+Vite avisará y usará otro (ej: 5174). Accede a la URL que indique en consola.
 
-- Integración con backend y base de datos
-- Autenticación y registro de usuarios
+⚠️ Puerto 3000 ocupado
+JSON Server no iniciará. Cerrá la app que use ese puerto o elegí otro:
 
-## 🤝 Autores
+bash
+Copiar código
+npx json-server --watch db.json --port 3001
+⚠️ Error “export default not found”
+Revisar que los contextos (AuthProvider, CartProvider) estén exportados e importados correctamente.
 
+⚠️ Problemas con dependencias
+Si hay conflictos, reinstalar dependencias:
+
+bash
+Copiar código
+rm -rf node_modules package-lock.json
+npm install
+👥 Equipo de desarrollo
+Grupo 1 – Autenticación y Usuarios
+Gastón Hirschbein → Login y registro
+
+Máximo López → Manejo de sesiones y estado global
+
+Grupo 2 – Catálogo y Productos
+Valentina → Home y listados de productos
+
+Luciano Verdini → Detalle de productos y categorías
+
+Grupo 3 – Carrito y Compras
+Santino Castro → Gestión del carrito de compras
+
+Pedro Scotti → Proceso de checkout y finalización
+
+Juan Licciardo → Alta y gestión de productos
+
+🎓 Contexto académico
+Este proyecto fue creado como trabajo práctico para la materia Aplicaciones Interactivas en la Universidad Argentina de la Empresa (UADE), poniendo en práctica conceptos de:
+
+Desarrollo frontend con React
+
+Gestión de estado global
+
+Routing y navegación
+
+Experiencia de usuario (UX/UI)
+
+Trabajo colaborativo en equipo
+
+💡 Próximas mejoras
+🔗 Integración con un backend real y base de datos persistente
+
+🔐 Autenticación completa con JWT
+
+📱 Diseño responsive mejorado y modo oscuro
+
+📊 Panel de administración más avanzado
+
+🚀 Deploy en producción
+
+💳 Integración con gateway de pagos
+
+🤝 Autores
 - **Pedro [PeppoScotti](https://github.com/PeppoScotti)**
 - **Gaston [gastonprogram](https://github.com/gastonprogram)**
 - **Santino [SantinoCastro](https://github.com/Gusabelu1)**
