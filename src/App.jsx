@@ -7,7 +7,6 @@
  */
 
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { CartProvider } from "./componentes/cart";
 import { InicioSesion, Registro } from './componentes/auth'
 import { Cart } from './componentes/cart'
 import { Header, SimpleHeader, ProtectedRoute } from './componentes/layout'
@@ -15,7 +14,6 @@ import Home from "./pages/home";
 import Categories from "./pages/categories";
 import ProductDetail from "./pages/productDetail";
 import ProductCrud from "./pages/productCrud";
-import Checkout from "./pages/checkout";
 import "./index.css";
 
 
@@ -29,11 +27,9 @@ import "./index.css";
  */
 export default function App() {
   return (
-    <CartProvider>
       <BrowserRouter>
         <AppContent />
       </BrowserRouter>
-    </CartProvider>
   );
 }
 

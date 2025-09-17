@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCart } from "../componentes/cart/CartProvider";
+import { useCart } from "../context/CartProvider";
 
 /**
  * Componente de página de detalle de producto

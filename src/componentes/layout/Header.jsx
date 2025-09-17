@@ -5,7 +5,7 @@
  */
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { useCart } from "../cart/CartProvider";
+import { useCart } from "../../context/CartProvider";
 import { useAuth } from "../../context/AuthContext";
 import "./header.css";
 

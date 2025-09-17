@@ -72,7 +72,7 @@
       "name": "Celular",
       "categoryId": 1,
       "price": 800,
-      "stock": 1000,
+      "stock": 998,
       "image": "phone.jpg",
       "description": "Celular de última generación con pantalla OLED y cámara de 108MP."
     },
@@ -126,7 +126,7 @@
       "name": "BMW serie 1 coupe",
       "categoryId": 3,
       "price": 12000,
-      "stock": 1,
+      "stock": 0,
       "image": "619116_1_im.jpg",
       "description": "BMW serie 1 coupe, color blanco 89.000KM"
     },
@@ -135,7 +135,7 @@
       "name": "Dodge Challenger SRT",
       "categoryId": 3,
       "price": 65000,
-      "stock": 2,
+      "stock": 0,
       "image": "1Y8A5814.jpg",
       "description": "Dodge Challenger SRT. Nuevo Muscle Car 0KM."
     },
@@ -162,7 +162,7 @@
       "name": "Adidas Yeezy",
       "categoryId": 2,
       "price": 120,
-      "stock": 12,
+      "stock": 9,
       "image": "adidas.webp",
       "description": "Adidas Yeezy comodidad extrema."
     },

@@ -10,5 +10,5 @@
  */
 
 export { default as Cart } from './Cart';
-export { default as CartProvider } from './CartProvider';
-export { useCart } from './CartProvider';
+export { default as CartProvider } from '../../context/CartProvider';
+export { useCart } from '../../context/CartProvider';
