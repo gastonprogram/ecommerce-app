@@ -6,7 +6,7 @@
  */
 
 import { Link } from "react-router-dom";
-import { useCart } from "../cart/CartProvider";
+import { useCart } from "../../context/CartProvider";
 
 /**
  * Componente de tarjeta de producto

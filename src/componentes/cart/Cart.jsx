@@ -15,7 +15,7 @@
  * - Mensaje informativo cuando el carrito está vacío
  */
 
-import { useCart } from "./CartProvider";
+import { useCart } from "../../context/CartProvider";
 import { useEffect, useState } from "react";
 import { checkoutWithStock } from "../../services/productService";
 import "./Cart.css";
