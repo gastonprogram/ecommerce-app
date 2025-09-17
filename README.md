@@ -126,7 +126,7 @@ Gastón Hirschbein → Manejo de sesiones y rutas protegidas
 
 Grupo 2 – Catálogo y UI
 
-Valentina → Catálogo, categorías, UI general y detalle de producto
+Valentina Segovia → Catálogo, categorías, UI general y detalle de producto
 
 Luciano Verdini → Catálogo, categorías, agregar al carrito y detalle de producto
 
