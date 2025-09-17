@@ -15,7 +15,10 @@ import Home from "./pages/home";
 import Categories from "./pages/categories";
 import ProductDetail from "./pages/productDetail";
 import ProductCrud from "./pages/productCrud";
+import Checkout from "./pages/checkout";
 import "./index.css";
+
+
 
 /**
  * Componente principal de la aplicación
