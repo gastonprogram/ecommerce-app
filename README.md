@@ -1,6 +1,6 @@
 # 🛒 E-commerce App – UADE
 
-Proyecto de e-commerce realizado en **React**, desarrollado como parte de la materia **Aplicaciones Interactivas** de la carrera **Desarrollo de Software en UADE**.
+Proyecto de e-commerce realizado en **React**, desarrollado como parte de la materia **Aplicaciones Interactivas** .
 
 ---
 
@@ -60,8 +60,7 @@ ecommerce-app/
 ├── package.json
 └── README.md
 
-yaml
-Copiar código
+
 
 ---
 
@@ -83,32 +82,29 @@ Copiar código
    cd ecommerce-app
 Instalar dependencias:
 
-bash
-Copiar código
+
 npm install
 Levantar el frontend:
 
-bash
-Copiar código
+
+
 npm run dev
 👉 Disponible en: http://localhost:5173
 
 Levantar el backend simulado (JSON Server):
 
-bash
-Copiar código
+
 npx json-server --watch db.json --port 3000
 👉 Disponible en: http://localhost:3000
 
-🛠️ Troubleshooting
+## 🛠️ Troubleshooting
 ⚠️ Puerto 5173 ocupado
 Vite avisará y usará otro (ej: 5174). Accede a la URL que indique en consola.
 
 ⚠️ Puerto 3000 ocupado
 JSON Server no iniciará. Cerrá la app que use ese puerto o elegí otro:
 
-bash
-Copiar código
+
 npx json-server --watch db.json --port 3001
 ⚠️ Error “export default not found”
 Revisar que los contextos (AuthProvider, CartProvider) estén exportados e importados correctamente.
@@ -116,29 +112,33 @@ Revisar que los contextos (AuthProvider, CartProvider) estén exportados e impor
 ⚠️ Problemas con dependencias
 Si hay conflictos, reinstalar dependencias:
 
-bash
-Copiar código
+
 rm -rf node_modules package-lock.json
 npm install
-👥 Equipo de desarrollo
+
+## 👥 Equipo de desarrollo
+
 Grupo 1 – Autenticación y Usuarios
-Gastón Hirschbein → Login y registro
 
-Máximo López → Manejo de sesiones y estado global
+Máximo López → Registro de usuarios y autenticación con contexto
 
-Grupo 2 – Catálogo y Productos
-Valentina → Home y listados de productos
+Gastón Hirschbein → Manejo de sesiones y rutas protegidas
 
-Luciano Verdini → Detalle de productos y categorías
+Grupo 2 – Catálogo y UI
 
-Grupo 3 – Carrito y Compras
-Santino Castro → Gestión del carrito de compras
+Valentina → Catálogo, categorías, UI general y detalle de producto
 
-Pedro Scotti → Proceso de checkout y finalización
+Luciano Verdini → Catálogo, categorías, agregar al carrito y detalle de producto
 
-Juan Licciardo → Alta y gestión de productos
+Grupo 3 – CRUD, Carrito y Checkout
 
-🎓 Contexto académico
+Juan Licciardo → CRUD de productos
+
+Santino Castro → Carrito de compras y cupones de descuento
+
+Pedro Scotti → Proceso de checkout (validación de stock, vaciar carrito, feedback al usuario)
+
+## 🎓 Contexto académico
 Este proyecto fue creado como trabajo práctico para la materia Aplicaciones Interactivas en la Universidad Argentina de la Empresa (UADE), poniendo en práctica conceptos de:
 
 Desarrollo frontend con React
@@ -151,7 +151,7 @@ Experiencia de usuario (UX/UI)
 
 Trabajo colaborativo en equipo
 
-💡 Próximas mejoras
+## 💡 Próximas mejoras
 🔗 Integración con un backend real y base de datos persistente
 
 🔐 Autenticación completa con JWT
