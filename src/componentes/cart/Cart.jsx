@@ -48,6 +48,8 @@ const Cart = () => {
   const [purchasedItems, setPurchasedItems] = useState([]);
   const [purchasedTotal, setPurchasedTotal] = useState(0);
   const [purchasedTotalWithDiscount, setPurchasedTotalWithDiscount] = useState(0);
+  const [purchasedDiscount, setPurchasedDiscount] = useState(0);
+  const [purchasedCoupon, setPurchasedCoupon] = useState("");
 
   // Efecto para cargar productos desde la API al montar el componente
   useEffect(() => {
@@ -125,6 +127,8 @@ const Cart = () => {
       setPurchasedItems(summaryItems);
       setPurchasedTotal(summaryTotal);
       setPurchasedTotalWithDiscount(summaryTotalWithDiscount);
+      setPurchasedDiscount(discount);
+      setPurchasedCoupon(coupon);
       setShowSuccess(true);
 
       // Si todo ok: limpiar carrito y mostrar mensaje
@@ -327,6 +331,23 @@ const Cart = () => {
             </div>
             <div className="modal-body">
               <p>Gracias por tu compra. Este es el resumen:</p>
+              {purchasedDiscount > 0 && (
+                <div style={{ 
+                  background: '#e8f5e8', 
+                  border: '1px solid #4caf50', 
+                  borderRadius: '8px', 
+                  padding: '12px', 
+                  marginBottom: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <i className="fas fa-ticket-alt" style={{ color: '#4caf50' }}></i>
+                  <span style={{ color: '#2e7d32', fontWeight: 'bold' }}>
+                    Cupón aplicado: {purchasedCoupon} (-{purchasedDiscount}% de descuento)
+                  </span>
+                </div>
+              )}
               <div className="purchase-summary">
                 <table className="summary-table">
                   <thead>
@@ -354,15 +375,15 @@ const Cart = () => {
                   </tbody>
                 </table>
                 <div className="summary-totals">
-                  {discount > 0 ? (
+                  {purchasedDiscount > 0 ? (
                     <>
                       <div className="summary-line">
-                        <span>Total sin descuento</span>
-                        <span style={{ textDecoration: 'line-through', color: '#888' }}>USD {purchasedTotal.toFixed(2)}</span>
+                        <span>Subtotal</span>
+                        <span>USD {purchasedTotal.toFixed(2)}</span>
                       </div>
-                      <div className="summary-line">
-                        <span>Descuento</span>
-                        <span>-{discount}%</span>
+                      <div className="summary-line" style={{ color: '#4caf50' }}>
+                        <span>Descuento ({purchasedCoupon})</span>
+                        <span>-USD {(purchasedTotal - purchasedTotalWithDiscount).toFixed(2)} (-{purchasedDiscount}%)</span>
                       </div>
                       <div className="summary-line total">
                         <span>Total pagado</span>
