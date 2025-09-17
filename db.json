@@ -169,11 +169,11 @@
     {
       "id": "14",
       "name": "Zapatillas Nike Deportivas",
-      "categoryId": 2,
-      "price": 30,
-      "stock": 10,
+      "categoryId": 1,
+      "price": 500,
+      "stock": 5,
       "image": "nike.jpg",
-      "description": "Zapatillas Deportivas para entrenamiento y fitness."
+      "description": "Zapatillas Deportivas para entrenamiento y fitness"
     },
     {
       "id": "15",
