@@ -14,10 +14,10 @@ import {
   validarFormularioRegistro, 
   validarEmail, 
   validarNombre, 
+  validarApellido,
   validarPassword, 
   validarConfirmPassword 
 } from '../../utils/validaciones';
-import { verificarEmailExistente } from '../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 import PasswordStrength from './PasswordStrength';
 import './Auth.css';
@@ -39,6 +39,7 @@ const Registro = () => {
   // Estado para almacenar todos los datos del formulario de registro
   const [formData, setFormData] = useState({
     nombre: '',
+    apellido: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -152,25 +153,22 @@ const Registro = () => {
           setErrores(prev => ({ ...prev, nombre: nombreValidacion.mensaje }));
         }
         break;
+      
+      case 'apellido':
+        // Validar formato y longitud del apellido
+        const apellidoValidacion = validarApellido(value);
+        if (!apellidoValidacion.valido) {
+          setErrores(prev => ({ ...prev, apellido: apellidoValidacion.mensaje }));
+        }
+        break;
         
       case 'email':
         // Validar formato del email
         const emailValidacion = validarEmail(value);
         if (!emailValidacion.valido) {
           setErrores(prev => ({ ...prev, email: emailValidacion.mensaje }));
-        } else {
-          // Si el formato es válido, verificar si el email ya existe en la base de datos
-          // Esta es una validación asíncrona adicional
-          verificarEmailExistente(value).then(existe => {
-            // Solo mostrar error si el campo sigue siendo el activo (evitar race conditions)
-            if (existe && tocado.email) {
-              setErrores(prev => ({ ...prev, email: 'Este email ya está registrado' }));
-            }
-          }).catch(() => {
-            // Ignorar errores de conexión en esta validación opcional
-            // La validación definitiva se hará en el submit
-          });
         }
+        // Nota: La validación de email duplicado se hace en el backend
         break;
         
       case 'password':
@@ -213,7 +211,7 @@ const Registro = () => {
     if (!validacion.valido) {
       setErrores(validacion.errores);
       // Marcar todos los campos como tocados para mostrar errores
-      setTocado({ nombre: true, email: true, password: true, confirmPassword: true });
+      setTocado({ nombre: true, apellido: true, email: true, password: true, confirmPassword: true });
       return;
     }
 
@@ -225,6 +223,7 @@ const Registro = () => {
       // Usar la función registrar del Context
       const resultado = await registrar({
         nombre: formData.nombre,
+        apellido: formData.apellido,
         email: formData.email,
         password: formData.password
         // ACLARACION IMPORTANTE A TENER EN CUENTA: confirmPassword no se envía al backend, solo se usa para validación en frontend
@@ -234,6 +233,7 @@ const Registro = () => {
         // Registro exitoso: limpiar formulario
         setFormData({
           nombre: '',
+          apellido: '',
           email: '',
           password: '',
           confirmPassword: ''
@@ -266,10 +266,10 @@ const Registro = () => {
         {/* Formulario principal de registro */}
         <form onSubmit={handleSubmit} className="auth-form">
           
-          {/* Campo de nombre completo */}
+          {/* Campo de nombre */}
           <div className="form-group">
             <label htmlFor="nombre" className="form-label">
-              Nombre Completo
+              Nombre
             </label>
             <input
               type="text"
@@ -279,11 +279,31 @@ const Registro = () => {
               onChange={handleChange}
               onBlur={handleBlur}
               className={`form-input ${errores.nombre ? 'error' : ''}`}
-              placeholder="Tu nombre completo"
+              placeholder="Tu nombre"
               required
             />
             {/* Mostrar mensaje de error específico para el nombre */}
             {errores.nombre && <span className="error-message">{errores.nombre}</span>}
+          </div>
+
+          {/* Campo de apellido */}
+          <div className="form-group">
+            <label htmlFor="apellido" className="form-label">
+              Apellido
+            </label>
+            <input
+              type="text"
+              id="apellido"
+              name="apellido"
+              value={formData.apellido}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`form-input ${errores.apellido ? 'error' : ''}`}
+              placeholder="Tu apellido"
+              required
+            />
+            {/* Mostrar mensaje de error específico para el apellido */}
+            {errores.apellido && <span className="error-message">{errores.apellido}</span>}
           </div>
 
           {/* Campo de email */}

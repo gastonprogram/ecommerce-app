@@ -22,6 +22,19 @@ export const validarNombre = (nombre) => {
   return { valido: true, mensaje: '' };
 };
 
+// Validar apellido (misma lógica que nombre)
+export const validarApellido = (apellido) => {
+  if (!apellido) return { valido: false, mensaje: 'El apellido es obligatorio' };
+  if (apellido.length < 2) return { valido: false, mensaje: 'El apellido debe tener al menos 2 caracteres' };
+  if (apellido.length > 50) return { valido: false, mensaje: 'El apellido no puede exceder 50 caracteres' };
+  
+  // Solo letras, espacios y algunos caracteres especiales
+  const apellidoRegex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s'-]+$/;
+  if (!apellidoRegex.test(apellido)) return { valido: false, mensaje: 'El apellido solo puede contener letras' };
+  
+  return { valido: true, mensaje: '' };
+};
+
 // Validar fortaleza de contraseña
 export const validarPassword = (password) => {
   const validaciones = {
@@ -98,6 +111,9 @@ export const validarFormularioRegistro = (formData) => {
   
   const nombreValidacion = validarNombre(formData.nombre);
   if (!nombreValidacion.valido) errores.nombre = nombreValidacion.mensaje;
+  
+  const apellidoValidacion = validarApellido(formData.apellido);
+  if (!apellidoValidacion.valido) errores.apellido = apellidoValidacion.mensaje;
   
   const emailValidacion = validarEmail(formData.email);
   if (!emailValidacion.valido) errores.email = emailValidacion.mensaje;

@@ -79,10 +79,12 @@ export const AuthProvider = ({ children }) => {
       
       if (resultado.success) {
         // Si el login es exitoso, guardar los datos
+        // El usuario viene con la info básica extraída del token JWT
         setUsuario(resultado.usuario);
         setEstaAutenticado(true);
         
         // Guardar en localStorage para persistencia
+        // IMPORTANTE: Solo guardamos el token JWT, la info del usuario se extrae de él
         localStorage.setItem('authToken', resultado.token);
         localStorage.setItem('authUser', JSON.stringify(resultado.usuario));
         

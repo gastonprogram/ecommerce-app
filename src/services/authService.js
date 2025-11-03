@@ -1,159 +1,270 @@
-// Configuración de la API
-const API_URL = 'http://localhost:3000';
+// ========================================
+// CONFIGURACIÓN DE LA API - SPRING BOOT
+// ========================================
+// URL base del backend Spring Boot
+const API_URL = 'http://localhost:8080';
 
-// Función helper para hacer peticiones
-const apiRequest = async (endpoint, options = {}) => {
+/**
+ * Función helper para hacer peticiones HTTP a la API
+ * 
+ * Maneja automáticamente:
+ * - Inclusión del token JWT en peticiones autenticadas
+ * - Headers de Content-Type
+ * - Manejo de errores HTTP
+ * 
+ * @param {string} endpoint - Ruta del endpoint (ej: '/api/auth/login')
+ * @param {Object} options - Opciones de fetch (method, body, headers, etc.)
+ * @param {boolean} requiresAuth - Si true, incluye el token JWT en el header
+ * @returns {Promise} - Respuesta parseada o texto plano
+ */
+const apiRequest = async (endpoint, options = {}, requiresAuth = false) => {
   try {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    });
+    // Preparar headers base
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    // Si la petición requiere autenticación, agregar el token JWT
+    if (requiresAuth) {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
     }
 
-    return await response.json();
+    // Realizar la petición
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      ...options,
+      headers,
+    });
+
+    // Manejar errores HTTP
+    if (!response.ok) {
+      // Intentar obtener el mensaje de error del backend
+      let errorMessage = `HTTP error! status: ${response.status}`;
+      try {
+        const errorData = await response.text();
+        if (errorData) {
+          errorMessage = errorData;
+        }
+      } catch (e) {
+        // Si no se puede leer el error, usar el mensaje genérico
+      }
+      throw new Error(errorMessage);
+    }
+
+    // Intentar parsear como JSON, si falla devolver como texto
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return await response.json();
+    } else {
+      return await response.text();
+    }
+
   } catch (error) {
     console.error('API Request Error:', error);
     throw error;
   }
 };
 
-// Verificar si un email ya está registrado
-export const verificarEmailExistente = async (email) => {
-  try {
-    const usuarios = await apiRequest(`/usuarios?email=${email}`);
-    return usuarios.length > 0;
-  } catch (error) {
-    console.error('Error verificando email:', error);
-    throw new Error('Error al verificar el email');
-  }
-};
+// ========================================
+// FUNCIONES DE AUTENTICACIÓN
+// ========================================
 
-// Iniciar sesión
+/**
+ * Iniciar sesión con el backend de Spring Boot
+ * 
+ * Endpoint: POST /api/auth/login
+ * Body: { email, password }
+ * Respuesta: Token JWT como string plano
+ * 
+ * @param {string} email - Email del usuario
+ * @param {string} password - Contraseña del usuario
+ * @returns {Object} - { success: boolean, token?: string, usuario?: object, message: string }
+ */
 export const iniciarSesion = async (email, password) => {
   try {
-    // Buscar usuario por email
-    const usuarios = await apiRequest(`/usuarios?email=${email}`);
-    
-    if (usuarios.length === 0) {
-      throw new Error('Email no registrado');
+    // Preparar los datos según el DTO LoginRequest de Spring Boot
+    const loginData = {
+      email: email.toLowerCase().trim(),
+      password: password
+    };
+
+    // Realizar petición al endpoint de login
+    // El backend devuelve el token JWT como texto plano
+    const token = await apiRequest('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(loginData),
+    });
+
+    // Extraer el email del token JWT (payload)
+    // El JWT tiene 3 partes separadas por puntos: header.payload.signature
+    let emailFromToken = email;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      emailFromToken = payload.sub || email; // 'sub' es el subject (username/email)
+    } catch (e) {
+      console.log('No se pudo extraer info del token, usando email del login');
     }
-
-    const usuario = usuarios[0];
-
-    // Verificar contraseña
-    if (usuario.password !== password) {
-      throw new Error('Contraseña incorrecta');
-    }
-
-    // Verificar si la cuenta está activa
-    if (!usuario.activo) {
-      throw new Error('Cuenta desactivada. Contacta al administrador');
-    }
-
-    // Generar token simple (sin guardar en db.json)
-    const token = `token_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     return {
       success: true,
-      usuario: {
-        id: usuario.id,
-        nombre: usuario.nombre,
-        email: usuario.email,
-      },
       token: token,
+      usuario: {
+        email: emailFromToken,
+      },
       message: 'Inicio de sesión exitoso'
     };
 
   } catch (error) {
+    // Manejar diferentes tipos de errores del backend
+    let errorMessage = 'Error al iniciar sesión';
+    
+    if (error.message.includes('401')) {
+      errorMessage = 'Email o contraseña incorrectos';
+    } else if (error.message.includes('403')) {
+      errorMessage = 'Acceso denegado';
+    } else if (error.message.includes('500')) {
+      errorMessage = 'Error del servidor. Intenta más tarde';
+    } else if (error.message.includes('Failed to fetch')) {
+      errorMessage = 'No se pudo conectar con el servidor. Verifica que esté funcionando';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
     return {
       success: false,
-      message: error.message || 'Error al iniciar sesión'
+      message: errorMessage
     };
   }
 };
 
-// Registrar nuevo usuario
+/**
+ * Registrar nuevo usuario en el backend de Spring Boot
+ * 
+ * Endpoint: POST /api/auth/register
+ * Body: { nombre, apellido, email, password }
+ * Respuesta: "User registered successfully" (texto plano)
+ * 
+ * @param {Object} datosUsuario - Datos del usuario a registrar
+ * @param {string} datosUsuario.nombre - Nombre del usuario
+ * @param {string} datosUsuario.apellido - Apellido del usuario
+ * @param {string} datosUsuario.email - Email del usuario
+ * @param {string} datosUsuario.password - Contraseña del usuario
+ * @returns {Object} - { success: boolean, message: string }
+ */
 export const registrarUsuario = async (datosUsuario) => {
   try {
-    // Verificar si el email ya existe
-    const emailExiste = await verificarEmailExistente(datosUsuario.email);
-    
-    if (emailExiste) {
-      throw new Error('Este email ya está registrado');
-    }
-
-    // Obtener usuarios para calcular un ID secuencial como string
-    let nuevoId = null;
-    try {
-      const usuarios = await apiRequest('/usuarios');
-      const maxId = usuarios
-        .map(u => {
-          const n = Number(u.id);
-          return Number.isFinite(n) ? n : 0;
-        })
-        .reduce((a, b) => Math.max(a, b), 0);
-      nuevoId = String(maxId + 1);
-    } catch (_) {
-      // Fallback si no se puede obtener la lista: usar timestamp
-      nuevoId = String(Date.now());
-    }
-
-    // Crear nuevo usuario con ID consistente (string)
-    const nuevoUsuario = {
-      id: nuevoId,
+    // Preparar los datos según el DTO RegisterRequest de Spring Boot
+    const registerData = {
       nombre: datosUsuario.nombre.trim(),
+      apellido: datosUsuario.apellido.trim(),
       email: datosUsuario.email.toLowerCase().trim(),
-      password: datosUsuario.password,
-      fechaRegistro: new Date().toISOString(),
-      activo: true
+      password: datosUsuario.password
     };
 
-    const usuarioCreado = await apiRequest('/usuarios', {
+    // Realizar petición al endpoint de registro
+    // El backend devuelve "User registered successfully" como texto plano
+    const mensaje = await apiRequest('/api/auth/register', {
       method: 'POST',
-      body: JSON.stringify(nuevoUsuario),
+      body: JSON.stringify(registerData),
     });
 
     return {
       success: true,
-      usuario: {
-        id: usuarioCreado.id,
-        nombre: usuarioCreado.nombre,
-        email: usuarioCreado.email,
-      },
-      message: 'Usuario registrado exitosamente'
+      message: mensaje || 'Usuario registrado exitosamente'
     };
 
   } catch (error) {
+    // Manejar diferentes tipos de errores del backend
+    let errorMessage = 'Error al registrar usuario';
+    
+    if (error.message.includes('Email already exists') || 
+        error.message.includes('already exists') ||
+        error.message.includes('ya existe')) {
+      errorMessage = 'Este email ya está registrado';
+    } else if (error.message.includes('400')) {
+      errorMessage = 'Datos inválidos. Verifica la información ingresada';
+    } else if (error.message.includes('500')) {
+      errorMessage = 'Error del servidor. Intenta más tarde';
+    } else if (error.message.includes('Failed to fetch')) {
+      errorMessage = 'No se pudo conectar con el servidor. Verifica que esté funcionando';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
     return {
       success: false,
-      message: error.message || 'Error al registrar usuario'
+      message: errorMessage
     };
   }
 };
 
-// Obtener todos los usuarios (para testing/admin)
-export const obtenerUsuarios = async () => {
-  try {
-    return await apiRequest('/usuarios');
-  } catch (error) {
-    console.error('Error obteniendo usuarios:', error);
-    throw error;
-  }
-};
+// ========================================
+// FUNCIONES DE UTILIDAD
+// ========================================
 
-// Verificar si el servidor está disponible
+/**
+ * Verificar si el servidor Spring Boot está disponible
+ * 
+ * Hace una petición simple para verificar conectividad
+ * 
+ * @returns {boolean} - true si el servidor responde, false en caso contrario
+ */
 export const verificarServidor = async () => {
   try {
-    await apiRequest('/usuarios?_limit=1');
+    await fetch(`${API_URL}/api/auth/login`, { 
+      method: 'OPTIONS' 
+    });
     return true;
   } catch (error) {
     return false;
+  }
+};
+
+/**
+ * Obtener información del usuario desde el token JWT
+ * 
+ * Decodifica el payload del token para extraer información básica
+ * No valida la firma del token (eso lo hace el backend)
+ * 
+ * @returns {Object|null} - Información del usuario o null si no hay token
+ */
+export const obtenerInfoUsuarioDesdeToken = () => {
+  try {
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+
+    // Decodificar el payload del JWT (segunda parte del token)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    
+    return {
+      email: payload.sub, // El 'sub' (subject) normalmente contiene el email/username
+      roles: payload.roles || [], // Los roles/authorities del usuario
+      exp: payload.exp, // Timestamp de expiración
+    };
+  } catch (error) {
+    console.error('Error decodificando token:', error);
+    return null;
+  }
+};
+
+/**
+ * Verificar si el token JWT ha expirado
+ * 
+ * @returns {boolean} - true si el token está expirado o no existe
+ */
+export const tokenExpirado = () => {
+  try {
+    const info = obtenerInfoUsuarioDesdeToken();
+    if (!info || !info.exp) return true;
+
+    // Convertir el timestamp de segundos a milisegundos
+    const expiracion = info.exp * 1000;
+    return Date.now() >= expiracion;
+  } catch (error) {
+    return true;
   }
 };
 
