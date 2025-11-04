@@ -7,6 +7,7 @@
 
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { apiRequest } from "../../services/authService";
 
 /**
  * Componente de lista de categorías para navegación lateral
@@ -28,10 +29,13 @@ export default function CategoryList() {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:3000/categories");
+
+        const response = await apiRequest('/api/categorias', {
+          method: 'GET'
+        });
         
-        if (response.ok) {
-          const categoriesData = await response.json();
+        if (response?.length > 0) {
+          const categoriesData = response;
           setCategories(categoriesData);
         } else {
           setCategories([]);

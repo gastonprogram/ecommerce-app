@@ -40,7 +40,7 @@ export default function ProductCrud() {
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    categoryId: "",
+    categorias: [],
     price: "",
     stock: "",
     image: "",
@@ -93,7 +93,7 @@ export default function ProductCrud() {
   const resetForm = () => {
     setFormData({
       name: "",
-      categoryId: "",
+      categorias: [],
       price: "",
       stock: "",
       image: "",
@@ -110,7 +110,28 @@ export default function ProductCrud() {
    * Manejar cambios en los campos del formulario
    */
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    // Accept either a native event (with options for multi-select) or a synthetic event
+    const tgt = e && e.target ? e.target : e;
+    const { name } = tgt;
+
+    if (name === "categorias") {
+      // If caller passed an array directly: { target: { name: 'categorias', value: [...] } }
+      if (Array.isArray(tgt.value)) {
+        setFormData((prev) => ({ ...prev, categorias: tgt.value }));
+        return;
+      }
+
+      // Native select multiple: read options
+      if (tgt.options) {
+        const selected = Array.from(tgt.options)
+          .filter((o) => o.selected)
+          .map((o) => o.value);
+        setFormData((prev) => ({ ...prev, categorias: selected }));
+        return;
+      }
+    }
+
+    const value = tgt.value;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -166,7 +187,7 @@ export default function ProductCrud() {
       const productData = {
         id: newId,
         name: formData.name.trim(),
-        categoryId: Number(formData.categoryId),
+        categorias: (formData.categorias || []).map((id) => ({ id: Number(id) })),
         price: Number(formData.price),
         stock: Number(formData.stock),
         image: formData.image.trim(),
@@ -204,7 +225,7 @@ export default function ProductCrud() {
       const productData = {
         id: editingProduct.id,
         name: formData.name.trim(),
-        categoryId: Number(formData.categoryId),
+        categorias: (formData.categorias || []).map((id) => ({ id: Number(id) })),
         price: Number(formData.price),
         stock: Number(formData.stock),
         image: formData.image.trim(),
@@ -274,7 +295,7 @@ export default function ProductCrud() {
     setIsCreating(false);
     setFormData({
       name: product.name,
-      categoryId: String(product.categoryId),
+      categorias: product.categorias ? product.categorias.map((c) => String(c.id)) : (product.categoryId ? [String(product.categoryId)] : []),
       price: String(product.price),
       stock: String(product.stock),
       image: product.image || "",
@@ -296,8 +317,34 @@ export default function ProductCrud() {
   /**
    * Obtener el nombre de la categoría por ID
    */
-  const getCategoryName = (categoryId) => {
-    const category = categories.find((cat) => cat.id === String(categoryId));
+  const getCategoryName = (productOrCategory) => {
+    if (!productOrCategory) return "Sin categoría";
+
+    // Si viene un objeto producto
+    if (typeof productOrCategory === "object") {
+      const prod = productOrCategory;
+      const cats = prod.categorias || (prod.categoryId ? [{ id: prod.categoryId }] : []);
+      if (!cats || cats.length === 0) return "Sin categoría";
+      return cats
+        .map((c) => {
+          const id = String(typeof c === "object" ? c.id : c);
+          const category = categories.find((cat) => String(cat.id) === id);
+          return category ? category.name : id;
+        })
+        .join(", ");
+    }
+
+    // Si viene un id o array de ids
+    if (Array.isArray(productOrCategory)) {
+      return productOrCategory
+        .map((id) => {
+          const category = categories.find((cat) => String(cat.id) === String(id));
+          return category ? category.name : id;
+        })
+        .join(", ");
+    }
+
+    const category = categories.find((cat) => cat.id === String(productOrCategory));
     return category ? category.name : "Sin categoría";
   };
 

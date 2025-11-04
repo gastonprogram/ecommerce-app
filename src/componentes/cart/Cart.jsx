@@ -16,8 +16,9 @@
  */
 
 import { useCart } from "../../context/CartProvider";
+import { useAuth } from "../../context/AuthContext";
 import { useEffect, useState } from "react";
-import { checkoutWithStock } from "../../services/productService";
+import { checkoutWithStock, getProducts, createOrderCheckout } from "../../services/productService";
 import "./Cart.css";
 
 /**
@@ -31,6 +32,7 @@ import "./Cart.css";
 const Cart = () => {
   // Obtener funciones y estado del carrito desde el contexto
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const auth = useAuth();
 
   // Estado local para almacenar productos cargados desde la API
   const [products, setProducts] = useState([]);
@@ -53,12 +55,17 @@ const Cart = () => {
 
   // Efecto para cargar productos desde la API al montar el componente
   useEffect(() => {
-    fetch("http://localhost:3000/products")
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-      })
-      .catch(() => setProducts([]));
+    const load = async () => {
+      try {
+        const prods = await getProducts();
+        setProducts(Array.isArray(prods) ? prods : []);
+      } catch (e) {
+        console.error('Error cargando productos en carrito:', e);
+        setProducts([]);
+      }
+    };
+
+    load();
   }, []);
 
   // Handler para aplicar cupón de descuento
@@ -101,43 +108,46 @@ const Cart = () => {
       setCheckoutMsg("");
       setCheckoutError("");
 
-      // Ejecutar checkout (valida stock y descuenta en el servidor)
-      const result = await checkoutWithStock(cart.map(({ id, quantity }) => ({ id, quantity })));
-      if (!result.success) {
-        setCheckoutError(result.message || "No se pudo procesar la compra.");
+      // Ejecutar checkout vía endpoint de pedidos (backend crea registros y descuenta stock)
+      const payloadItems = cart.map(({ id, quantity }) => ({ id, quantity }));
+
+      try {
+        const pedidoResponse = await createOrderCheckout(payloadItems);
+
+        // Pedido creado: preparar resumen de compra ANTES de limpiar el carrito
+        const summaryItems = cart.map((item) => {
+          const prod = getProduct(item.id) || {};
+          const unitPrice = typeof prod.price === 'number' ? prod.price : (item.price || 0);
+          return {
+            id: item.id,
+            name: prod.name || item.name || 'Producto',
+            quantity: item.quantity,
+            price: unitPrice,
+            subtotal: unitPrice * item.quantity,
+            image: prod.image || item.image
+          };
+        });
+        const summaryTotal = summaryItems.reduce((acc, it) => acc + it.subtotal, 0);
+        const summaryTotalWithDiscount = discount > 0 ? summaryTotal * (1 - discount / 100) : summaryTotal;
+
+        setPurchasedItems(summaryItems);
+        setPurchasedTotal(summaryTotal);
+        setPurchasedTotalWithDiscount(summaryTotalWithDiscount);
+        setPurchasedDiscount(discount);
+        setPurchasedCoupon(coupon);
+        setShowSuccess(true);
+
+        // Limpiar carrito y mostrar mensaje
+        clearCart();
+        setCheckoutMsg(`Pedido #${pedidoResponse.id} creado. ¡Compra realizada con éxito!`);
+        setCoupon("");
+        setDiscount(0);
+        setCouponMsg("");
+      } catch (err) {
+        const message = err?.message || 'No se pudo procesar la compra.';
+        setCheckoutError(message);
         return;
       }
-
-      // Preparar resumen de compra ANTES de limpiar el carrito
-      const summaryItems = cart.map((item) => {
-        const prod = getProduct(item.id) || {};
-        const unitPrice = typeof prod.price === 'number' ? prod.price : (item.price || 0);
-        return {
-          id: item.id,
-          name: prod.name || item.name || 'Producto',
-          quantity: item.quantity,
-          price: unitPrice,
-          subtotal: unitPrice * item.quantity,
-          image: prod.image || item.image
-        };
-      });
-      const summaryTotal = summaryItems.reduce((acc, it) => acc + it.subtotal, 0);
-      const summaryTotalWithDiscount = discount > 0 ? summaryTotal * (1 - discount / 100) : summaryTotal;
-
-      setPurchasedItems(summaryItems);
-      setPurchasedTotal(summaryTotal);
-      setPurchasedTotalWithDiscount(summaryTotalWithDiscount);
-      setPurchasedDiscount(discount);
-      setPurchasedCoupon(coupon);
-      setShowSuccess(true);
-
-      // Si todo ok: limpiar carrito y mostrar mensaje
-      clearCart();
-      setCheckoutMsg("¡Compra realizada con éxito! Gracias por tu compra.");
-      // Limpiar cupón
-      setCoupon("");
-      setDiscount(0);
-      setCouponMsg("");
     } catch (err) {
       setCheckoutError("Ocurrió un error al finalizar la compra. Intenta nuevamente.");
     } finally {

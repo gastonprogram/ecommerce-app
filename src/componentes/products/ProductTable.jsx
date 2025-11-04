@@ -14,9 +14,9 @@ export default function ProductTable({
 }) {
   return (
     <div className="crud-list-section">
-      <h2>Productos Existentes ({products.length})</h2>
+      <h2>Productos Existentes ({products?.length})</h2>
       
-      {products.length === 0 ? (
+      {products?.length === 0 ? (
         <div className="empty-state">
           <p>No hay productos registrados</p>
           <button onClick={startCreate} className="btn btn-primary">
@@ -38,7 +38,7 @@ export default function ProductTable({
               </tr>
             </thead>
             <tbody>
-              {products.map(product => (
+              {products?.map(product => (
                 <tr 
                   key={product.id} 
                   className={editingProduct?.id === product.id ? "editing" : ""}
@@ -48,7 +48,7 @@ export default function ProductTable({
                     <strong>{product.name}</strong>
                     <small>{product.description}</small>
                   </td>
-                  <td>{getCategoryName(product.categoryId)}</td>
+                  <td>{getCategoryName(product)}</td>
                   <td className="price">${Number(product.price).toFixed(2)}</td>
                   <td className={`stock ${product.stock > 0 ? "in-stock" : "out-stock"}`}>
                     {product.stock} unidades

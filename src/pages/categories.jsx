@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ProductCard from "../componentes/products/productCard";
 import CategoryList from "../componentes/products/categoryList";
+import { getProductsByCategory } from "../services/productService";
 
 /**
  * Componente de página de categorías
@@ -30,16 +31,10 @@ export default function Categories() {
     const fetchCategoryProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3000/products?categoryId=${id}`);
-        
-        if (response.ok) {
-          const data = await response.json();
-          // Ordenar productos alfabéticamente por nombre
-          const sortedProducts = data.sort((a, b) => a.name.localeCompare(b.name));
-          setProducts(sortedProducts);
-        } else {
-          setProducts([]);
-        }
+        const data = await getProductsByCategory(id);
+        const arr = Array.isArray(data) ? data : [];
+        const sortedProducts = arr.sort((a, b) => a.name.localeCompare(b.name));
+        setProducts(sortedProducts);
       } catch (error) {
         console.error('Error al cargar productos de la categoría:', error);
         setProducts([]);

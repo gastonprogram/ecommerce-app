@@ -2,6 +2,8 @@
  * Componente del formulario de productos
  */
 
+import { useState, useRef, useEffect } from 'react';
+
 export default function ProductForm({ 
   editingProduct,
   formData,
@@ -12,6 +14,68 @@ export default function ProductForm({
   resetForm,
   submitting 
 }) {
+
+  function MultiSelect({ options, value = [], onChange, placeholder }) {
+    const [open, setOpen] = useState(false);
+    const ref = useRef(null);
+
+    useEffect(() => {
+      function onDoc(e) {
+        if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+      }
+      document.addEventListener('click', onDoc);
+      return () => document.removeEventListener('click', onDoc);
+    }, []);
+
+    const toggleOption = (optValue) => {
+      const exists = value.includes(String(optValue));
+      const next = exists ? value.filter((v) => v !== String(optValue)) : [...value, String(optValue)];
+      onChange(next);
+    };
+
+    return (
+      <div className="multi-select" ref={ref} style={{ position: 'relative' }}>
+        <button type="button" className="multi-select-toggle form-input" onClick={() => setOpen((s) => !s)}>
+          {value && value.length > 0
+            ? value
+                .map((id) => {
+                  const c = options.find((o) => String(o.id) === String(id));
+                  return c ? c.name : id;
+                })
+                .join(', ')
+            : placeholder}
+          <span style={{ float: 'right' }}>▾</span>
+        </button>
+
+        {open && (
+          <div className="multi-select-menu" style={{
+            position: 'absolute',
+            zIndex: 20,
+            background: '#fff',
+            border: '1px solid #ddd',
+            borderRadius: 6,
+            marginTop: 6,
+            width: '100%',
+            maxHeight: 200,
+            overflow: 'auto',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.08)'
+          }}>
+            {options.map((opt) => (
+              <label key={opt.id} style={{ display: 'flex', alignItems: 'center', padding: '8px 12px', cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={value.includes(String(opt.id))}
+                  onChange={() => toggleOption(opt.id)}
+                  style={{ marginRight: 8 }}
+                />
+                <span>{opt.name}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
   return (
     <div className="crud-form-section">
       <div className="form-card">
@@ -37,22 +101,16 @@ export default function ProductForm({
             </div>
 
             <div className="form-group">
-              <label htmlFor="categoryId" className="form-label">Categoría *</label>
-              <select
-                id="categoryId"
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleInputChange}
-                className="form-input"
-                required
-              >
-                <option value="">Seleccionar categoría</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+              <label htmlFor="categorias" className="form-label">Categorías *</label>
+              <MultiSelect
+                options={categories}
+                value={formData.categorias || []}
+                onChange={(selectedArray) => {
+                  // enviar como evento sintético para mantener compatibilidad
+                  handleInputChange({ target: { name: 'categorias', value: selectedArray } });
+                }}
+                placeholder="Seleccionar categorías"
+              />
             </div>
           </div>
 

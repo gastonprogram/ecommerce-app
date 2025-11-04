@@ -17,7 +17,7 @@ const API_URL = 'http://localhost:8080';
  * @param {boolean} requiresAuth - Si true, incluye el token JWT en el header
  * @returns {Promise} - Respuesta parseada o texto plano
  */
-const apiRequest = async (endpoint, options = {}, requiresAuth = false) => {
+export const apiRequest = async (endpoint, options = {}, requiresAuth = false) => {
   try {
     // Preparar headers base
     const headers = {
@@ -103,6 +103,7 @@ export const iniciarSesion = async (email, password) => {
     let emailFromToken = email;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log('Payload del token:', payload);
       emailFromToken = payload.sub || email; // 'sub' es el subject (username/email)
     } catch (e) {
       console.log('No se pudo extraer info del token, usando email del login');

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../componentes/products/productCard";
 import CategoryList from "../componentes/products/categoryList";
+import { loadInitialData } from "../services/productService";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -8,15 +9,22 @@ export default function Home() {
   const [q, setQ] = useState("");
 
   useEffect(() => {
-    setLoading(true);
-    fetch("http://localhost:3000/products")
-      .then((r) => r.json())
-      .then((data) => {
-        const sorted = data.sort((a, b) => a.name.localeCompare(b.name));
+    const load = async () => {
+      setLoading(true);
+      try {
+        const { products: prodResp } = await loadInitialData();
+        const productArray = Array.isArray(prodResp) ? prodResp : [];
+        const sorted = productArray.sort((a, b) => a.name.localeCompare(b.name));
         setProducts(sorted);
-      })
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
+      } catch (e) {
+        console.error('Error cargando productos:', e);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
   }, []);
 
   const filtered = products.filter((p) =>

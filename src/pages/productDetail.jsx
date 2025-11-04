@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartProvider";
+import { getProductById } from "../services/productService";
 
 /**
  * Componente de página de detalle de producto
@@ -33,14 +34,8 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3000/products/${id}`);
-        
-        if (response.ok) {
-          const productData = await response.json();
-          setProduct(productData);
-        } else {
-          setProduct(null);
-        }
+        const productData = await getProductById(id);
+        setProduct(productData ?? null);
       } catch (error) {
         console.error('Error al cargar el producto:', error);
         setProduct(null);
