@@ -5,6 +5,7 @@
  */
 
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import { useCart } from "../../context/CartProvider";
 import { useAuth } from "../../context/AuthContext";
 import "./header.css";
@@ -14,10 +15,15 @@ const Header = () => {
   const { cart } = useCart();
 
   // Autenticación
-  const { estaAutenticado, logout } = useAuth();
+  const { estaAutenticado, logout, esAdmin, roles } = useAuth();
 
   // Navegación
   const navigate = useNavigate();
+  
+  // Memorizar el resultado de esAdmin para evitar recalcular en cada render
+  const isAdmin = useMemo(() => {
+    return esAdmin();
+  }, [estaAutenticado, roles, esAdmin]);
 
   // Total de items (protegido)
   const totalItems = Array.isArray(cart)
@@ -43,7 +49,8 @@ const Header = () => {
           <NavLink to="/" end className="nav-link">
             Productos
           </NavLink>
-          {estaAutenticado && (
+          {/* Mostrar "Administrar Productos" solo si el usuario es ADMIN */}
+          {estaAutenticado && isAdmin && (
             <NavLink to="/admin/products" className="nav-link">
               Administrar Productos
             </NavLink>

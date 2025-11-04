@@ -9,7 +9,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { InicioSesion, Registro } from './componentes/auth'
 import { Cart } from './componentes/cart'
-import { Header, SimpleHeader, ProtectedRoute } from './componentes/layout'
+import { Header, SimpleHeader, ProtectedRoute, AdminRoute } from './componentes/layout'
 import Home from "./pages/home";
 import Categories from "./pages/categories";
 import ProductDetail from "./pages/productDetail";
@@ -64,15 +64,19 @@ function AppContent() {
           <Route path="/categories/:id" element={<Categories />} />
           <Route path="/product/:id" element={<ProductDetail />} />
 
-          {/* Rutas protegidas */}
+          {/* Rutas protegidas - Solo ADMIN */}
           <Route path="/admin/products" element={
-            <ProtectedRoute>
+            <AdminRoute>
               <ProductCrud />
-            </ProtectedRoute>
+            </AdminRoute>
           } />
 
-          {/* Ruta del carrito */}
-          <Route path="/cart" element={<Cart />} />
+          {/* Ruta del carrito - Requiere autenticación */}
+          <Route path="/cart" element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          } />
           
           {/* Ruta para páginas no encontradas */}
           <Route path="*" element={<Navigate to="/" replace />} />

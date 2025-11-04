@@ -7,7 +7,7 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { iniciarSesion, registrarUsuario } from '../services/authService';
+import { iniciarSesion, registrarUsuario, obtenerInfoUsuarioDesdeToken } from '../services/authService';
 
 // Crear el contexto de autenticación
 const AuthContext = createContext();
@@ -27,6 +27,9 @@ export const AuthProvider = ({ children }) => {
   
   // Estado para controlar si el usuario está autenticado
   const [estaAutenticado, setEstaAutenticado] = useState(false);
+  
+  // Estado para almacenar los roles del usuario
+  const [roles, setRoles] = useState([]);
   
   // Estado para controlar la carga durante el login
   const [cargandoLogin, setCargandoLogin] = useState(false);
@@ -50,7 +53,13 @@ export const AuthProvider = ({ children }) => {
     if (tokenGuardado && usuarioGuardado) {
       try {
         const datosUsuario = JSON.parse(usuarioGuardado);
+        
+        // Extraer roles del token JWT
+        const infoToken = obtenerInfoUsuarioDesdeToken();
+        const rolesUsuario = infoToken?.roles || [];
+        
         setUsuario(datosUsuario);
+        setRoles(rolesUsuario);
         setEstaAutenticado(true);
       } catch (error) {
         // Si hay error al parsear, limpiar los datos corruptos
@@ -80,15 +89,29 @@ export const AuthProvider = ({ children }) => {
       if (resultado.success) {
         // Si el login es exitoso, guardar los datos
         // El usuario viene con la info básica extraída del token JWT
-        setUsuario(resultado.usuario);
-        setEstaAutenticado(true);
         
-        // Guardar en localStorage para persistencia
-        // IMPORTANTE: Solo guardamos el token JWT, la info del usuario se extrae de él
+        // ⚠️ CRÍTICO: Guardar en localStorage PRIMERO antes de extraer info del token
         localStorage.setItem('authToken', resultado.token);
         localStorage.setItem('authUser', JSON.stringify(resultado.usuario));
         
-        return { success: true, mensaje: 'Inicio de sesión exitoso' };
+        // Ahora SÍ extraer roles del token JWT (que ya está en localStorage)
+        const infoToken = obtenerInfoUsuarioDesdeToken();
+        const rolesUsuario = infoToken?.roles || [];
+        
+        // Actualizar todos los estados en un solo batch
+        setUsuario(resultado.usuario);
+        setRoles(rolesUsuario);
+        setEstaAutenticado(true);
+        
+        // Pequeño delay para asegurar que React procese los cambios de estado
+        // antes de que el componente InicioSesion navegue
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        return { 
+          success: true, 
+          mensaje: 'Inicio de sesión exitoso',
+          roles: rolesUsuario
+        };
       } else {
         // Si hay error, mostrar el mensaje
         setError(resultado.message);
@@ -146,11 +169,33 @@ export const AuthProvider = ({ children }) => {
     // Limpiar todos los estados
     setUsuario(null);
     setEstaAutenticado(false);
+    setRoles([]);
     setError('');
     
     // Limpiar localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('authUser');
+  };
+
+  /**
+   * Función para verificar si el usuario tiene un rol específico
+   * 
+   * @param {string} rol - Rol a verificar (ej: 'ADMIN', 'USER')
+   * @returns {boolean} - true si el usuario tiene el rol
+   */
+  const tieneRol = (rol) => {
+    return roles.includes(rol);
+  };
+
+  /**
+   * Función para verificar si el usuario es administrador
+   * 
+   * @returns {boolean} - true si el usuario tiene rol ADMIN
+   */
+  const esAdmin = () => {
+    // Verificar múltiples variaciones del rol admin
+    return roles.includes('ADMIN') || 
+           roles.includes('ROLE_ADMIN')
   };
 
   /**
@@ -165,6 +210,7 @@ export const AuthProvider = ({ children }) => {
     // Estados
     usuario,
     estaAutenticado,
+    roles,
     cargandoLogin,
     cargandoRegistro,
     error,
@@ -173,7 +219,9 @@ export const AuthProvider = ({ children }) => {
     login,
     registrar,
     logout,
-    limpiarError
+    limpiarError,
+    tieneRol,
+    esAdmin
   };
 
   return (

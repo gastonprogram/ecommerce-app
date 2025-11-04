@@ -103,10 +103,9 @@ export const iniciarSesion = async (email, password) => {
     let emailFromToken = email;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      console.log('Payload del token:', payload);
       emailFromToken = payload.sub || email; // 'sub' es el subject (username/email)
     } catch (e) {
-      console.log('No se pudo extraer info del token, usando email del login');
+      console.error('No se pudo extraer info del token, usando email del login');
     }
 
     return {
@@ -238,11 +237,12 @@ export const obtenerInfoUsuarioDesdeToken = () => {
     if (!token) return null;
 
     // Decodificar el payload del JWT (segunda parte del token)
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const payloadBase64 = token.split('.')[1];
+    const payload = JSON.parse(atob(payloadBase64));
     
     return {
       email: payload.sub, // El 'sub' (subject) normalmente contiene el email/username
-      roles: payload.roles || [], // Los roles/authorities del usuario
+      roles: payload.roles || payload.authorities || payload.role || [], // Los roles/authorities del usuario
       exp: payload.exp, // Timestamp de expiración
     };
   } catch (error) {
