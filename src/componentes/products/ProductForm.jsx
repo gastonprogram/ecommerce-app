@@ -9,7 +9,6 @@ export default function ProductForm({
   formData,
   categories,
   handleInputChange,
-  handleImageChange,
   handleSubmit,
   resetForm,
   submitting 
@@ -148,22 +147,44 @@ export default function ProductForm({
           </div>
 
           <div className="form-group">
-            <label htmlFor="image" className="form-label">Imagen</label>
+            <label htmlFor="image" className="form-label">URL de la Imagen</label>
             <input
-              type="file"
+              type="url"
               id="image"
               name="image"
-              onChange={handleImageChange}
+              value={formData.image}
+              onChange={handleInputChange}
               className="form-input"
-              accept="image/*"
+              placeholder="https://ejemplo.com/imagen.jpg"
             />
             {formData.image && (
-              <small className="form-help">
-                Archivo seleccionado: {formData.image}
-              </small>
+              <div style={{ marginTop: '10px' }}>
+                <img 
+                  src={formData.image} 
+                  alt="Vista previa" 
+                  style={{ 
+                    maxWidth: '200px', 
+                    maxHeight: '200px', 
+                    objectFit: 'contain',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    padding: '8px'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextElementSibling.style.display = 'block';
+                  }}
+                />
+                <small 
+                  className="form-help" 
+                  style={{ display: 'none', color: '#dc3545' }}
+                >
+                  ⚠️ No se pudo cargar la imagen. Verifica la URL.
+                </small>
+              </div>
             )}
             <small className="form-help">
-              Selecciona una imagen para el producto (JPG, PNG, etc.)
+              Ingresa la URL de una imagen desde internet (ej: https://ejemplo.com/imagen.jpg)
             </small>
           </div>
 

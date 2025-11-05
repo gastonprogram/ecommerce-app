@@ -196,7 +196,7 @@ const Cart = () => {
                 <td className="cart-product">
                   <img 
                     className="cart-product-img" 
-                    src={prod.image ? `/assets/${prod.image}` : "https://via.placeholder.com/60x60"} 
+                    src={prod.image || "https://via.placeholder.com/60x60"} 
                     alt={prod.name || item.name} 
                   />
                   <span>{prod.name || item.name || "Producto"}</span>
@@ -373,7 +373,7 @@ const Cart = () => {
                       <tr key={it.id}>
                         <td className="summary-product">
                           {it.image ? (
-                            <img className="summary-img" src={`/assets/${it.image}`} alt={it.name} />
+                            <img className="summary-img" src={it.image} alt={it.name} />
                           ) : null}
                           <span>{it.name}</span>
                         </td>

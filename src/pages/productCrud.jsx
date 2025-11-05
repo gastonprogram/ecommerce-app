@@ -46,8 +46,6 @@ export default function ProductCrud() {
     image: "",
     description: "",
   });
-  const [imageFile, setImageFile] = useState(null);
-
   // 👉 Auto-scroll cuando se activa la edición
   useEffect(() => {
     if (editingProduct) {
@@ -99,7 +97,6 @@ export default function ProductCrud() {
       image: "",
       description: "",
     });
-    setImageFile(null);
     setEditingProduct(null);
     setIsCreating(false);
     setError(null);
@@ -136,21 +133,6 @@ export default function ProductCrud() {
       ...prev,
       [name]: value,
     }));
-  };
-
-  /**
-   * Manejar cambio en el archivo de imagen
-   */
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      // Guardar solo el nombre del archivo en formData
-      setFormData((prev) => ({
-        ...prev,
-        image: file.name,
-      }));
-    }
   };
 
   /**
@@ -301,7 +283,6 @@ export default function ProductCrud() {
       image: product.image || "",
       description: product.description,
     });
-    setImageFile(null);
     setError(null);
     setSuccess("");
   };
@@ -382,7 +363,6 @@ export default function ProductCrud() {
             formData={formData}
             categories={categories}
             handleInputChange={handleInputChange}
-            handleImageChange={handleImageChange}
             handleSubmit={editingProduct ? handleUpdate : handleCreate}
             resetForm={resetForm}
             submitting={submitting}

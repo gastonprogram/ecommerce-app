@@ -70,8 +70,8 @@ export default function ProductDetail() {
   if (loading) return <p>Cargando...</p>;
   if (product === null) return <p>Producto no encontrado</p>;
 
-  // URL de imagen con fallback
-  const imgSrc = product.image ? `/assets/${product.image}` : "https://via.placeholder.com/800x500";
+  // URL de imagen (ahora viene completa desde el backend) con fallback
+  const imgSrc = product.image || "https://via.placeholder.com/800x500";
 
   return (
     <div className="product-detail">

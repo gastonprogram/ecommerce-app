@@ -19,8 +19,8 @@ export default function ProductCard({ product }) {
   // Hook para acceder a las funciones del carrito
   const { addToCart } = useCart();
 
-  // URL de imagen con fallback
-  const imgSrc = product.image ? `/assets/${product.image}` : "https://via.placeholder.com/400x240";
+  // URL de imagen (ahora viene completa desde el backend) con fallback
+  const imgSrc = product.image || "https://via.placeholder.com/400x240";
 
   /**
    * Manejar agregar producto al carrito

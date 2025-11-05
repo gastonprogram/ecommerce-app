@@ -56,9 +56,13 @@ export default function ProductTable({
                   <td className="image-cell">
                     {product.image ? (
                       <img 
-                        src={`/assets/${product.image}`} 
+                        src={product.image} 
                         alt={product.name}
                         className="product-thumbnail"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.parentElement.innerHTML = '<span class="no-image">Error al cargar</span>';
+                        }}
                       />
                     ) : (
                       <span className="no-image">Sin imagen</span>
