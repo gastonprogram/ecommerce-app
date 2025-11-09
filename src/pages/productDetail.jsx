@@ -61,8 +61,6 @@ export default function ProductDetail() {
         image: product.image
       });
       
-      // Feedback visual
-      alert(`${product.name} agregado al carrito!`);
     }
   };
 

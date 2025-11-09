@@ -243,9 +243,6 @@ const Registro = () => {
         setPasswordInfo(null);
         setMostrarPasswordStrength(false);
         
-        // Mostrar mensaje de éxito y redirigir
-        alert('Usuario registrado exitosamente. Serás redirigido al login.');
-        
         // Redirigir al login después de mostrar el mensaje
         setTimeout(() => {
           navigate('/login');
