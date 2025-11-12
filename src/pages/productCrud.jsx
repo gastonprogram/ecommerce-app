@@ -167,14 +167,15 @@ export default function ProductCrud() {
       const newId = String(maxId + 1);
 
       const productData = {
-        id: newId,
         name: formData.name.trim(),
-        categorias: (formData.categorias || []).map((id) => ({ id: Number(id) })),
+        description: formData.description.trim(),
         price: Number(formData.price),
         stock: Number(formData.stock),
         image: formData.image.trim(),
-        description: formData.description.trim(),
+        categoriasIds: (formData.categorias || []).map((id) => Number(id)),
       };
+
+      console.log('Datos enviados al backend:', productData);
 
       const newProduct = await createProduct(productData);
 
@@ -205,14 +206,15 @@ export default function ProductCrud() {
       setError(null);
 
       const productData = {
-        id: editingProduct.id,
         name: formData.name.trim(),
-        categorias: (formData.categorias || []).map((id) => ({ id: Number(id) })),
+        description: formData.description.trim(),
         price: Number(formData.price),
         stock: Number(formData.stock),
         image: formData.image.trim(),
-        description: formData.description.trim(),
+        categoriasIds: (formData.categorias || []).map((id) => Number(id)),
       };
+
+      console.log('Datos actualizados enviados al backend:', productData);
 
       const updatedProduct = await updateProduct(
         editingProduct.id,

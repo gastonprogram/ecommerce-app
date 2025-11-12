@@ -106,10 +106,16 @@ export default function ProductForm({
                 value={formData.categorias || []}
                 onChange={(selectedArray) => {
                   // enviar como evento sintético para mantener compatibilidad
+                  console.log('Categorías seleccionadas:', selectedArray);
                   handleInputChange({ target: { name: 'categorias', value: selectedArray } });
                 }}
                 placeholder="Seleccionar categorías"
               />
+              {(!formData.categorias || formData.categorias.length === 0) && (
+                <small className="form-help" style={{ color: '#dc3545' }}>
+                  * Debe seleccionar al menos una categoría
+                </small>
+              )}
             </div>
           </div>
 
