@@ -31,7 +31,6 @@ const AdminRoute = ({ children }) => {
 
   // Si está autenticado pero no es admin, redirigir al home
   if (!esAdmin()) {
-    // Podrías mostrar un toast o alerta aquí
     return <Navigate to="/" replace />;
   }
 
