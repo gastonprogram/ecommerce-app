@@ -109,7 +109,7 @@ export default function ProductDetail() {
               title={product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
               style={{ width: '100%', padding: '12px 24px', fontSize: '1.1rem' }}
             >
-              {product.stock === 0 ? "Sin stock" : "🛒 Agregar al carrito"}
+              {product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
             </button>
           </div>
         </div>
